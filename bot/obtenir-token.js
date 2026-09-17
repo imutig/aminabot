@@ -121,7 +121,9 @@ const serveur = http.createServer(async (req, res) => {
     console.log(`  TWITCH_CLIENT_ID     = ${ID}`);
     console.log(`  TWITCH_CLIENT_SECRET = ${SECRET}`);
     console.log(`  TWITCH_REFRESH_TOKEN = ${d.refresh_token}\n`);
-    console.log('  (BOT_OAUTH ne sert plus : le bot renouvelle son accès tout seul.)\n');
+    console.log(`  BOT_USERNAME         = ${login ?? '<le compte affiché ci-dessus>'}\n`);
+    console.log('  Le MEME jeton doit servir en local ET sur Railway : relancer ce');
+    console.log('  script invalide le precedent chez Twitch.\n');
   } catch (e) {
     res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(`<h1>Échec</h1><p>${e.message}</p>`);

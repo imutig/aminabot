@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Régie — Les notes de la semaine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./control.css">
+</head>
+<body>
+
+<div class="sky">
+  <svg class="cloud c1" viewBox="0 0 380 150"><g fill="#FFFFFF" opacity=".55"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g></svg>
+  <svg class="cloud c2" viewBox="0 0 240 130"><g fill="#FFFFFF" opacity=".45"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></svg>
+</div>
+
+<main class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="brand-t">Régie</div>
+      <div class="brand-s">Les notes de la semaine</div>
+    </div>
+    <div class="lien" id="lien">connexion…</div>
+  </header>
+
+  <!-- ---- Étape en cours ---- -->
+  <section class="card etape-card">
+    <div class="etape-haut">
+      <div class="etape-num" id="etapeNum">—</div>
+      <div>
+        <div class="etape-quoi">Étape en cours</div>
+        <div class="etape-label" id="etapeLabel">Au repos</div>
+      </div>
+    </div>
+    <div class="etape-suite">Ensuite : <b id="etapeSuite">—</b></div>
+  </section>
+
+  <!-- ---- Précédent / Suivant ---- -->
+  <section class="nav">
+    <button class="big prev" id="btnPrev">
+      <span class="big-fleche">‹</span>
+      <span class="big-txt">Précédent</span>
+    </button>
+    <button class="big next" id="btnNext">
+      <span class="big-txt">Suivant</span>
+      <span class="big-fleche">›</span>
+    </button>
+  </section>
+
+  <!-- ---- Note d'Amina ---- -->
+  <section class="card notes-card" id="notesCard">
+    <div class="titre-ligne">
+      <div class="titre">Note d'<span id="nomAmina">Amina</span></div>
+      <div class="etat-vote" id="etatVote">—</div>
+    </div>
+    <div class="notes" id="notes"></div>
+    <button class="mini" id="btnAnnuler">Annuler la note et rouvrir les votes</button>
+  </section>
+
+  <!-- ---- Le chat en direct ---- -->
+  <section class="card live-card" id="liveCard">
+    <div class="titre-ligne">
+      <div class="titre">Votes du chat</div>
+      <div class="chip" id="liveCount">0 vote</div>
+    </div>
+    <div class="live">
+      <div class="live-bloc">
+        <div class="live-l">Moyenne chat</div>
+        <div class="live-v" id="liveAvg">–</div>
+      </div>
+      <div class="live-bloc">
+        <div class="live-l">Note d'Amina</div>
+        <div class="live-v rose" id="liveAmina">–</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---- Aller directement à ---- -->
+  <section class="card">
+    <div class="titre">Aller directement à</div>
+    <div class="etapes" id="etapes"></div>
+  </section>
+
+  <!-- ---- Critères ---- -->
+  <section class="card">
+    <div class="titre-ligne">
+      <div class="titre">Les critères</div>
+      <div class="chip" id="critNb">—</div>
+    </div>
+    <div class="verrou off" id="critVerrou">Segment en cours — arrête-le pour modifier les critères.</div>
+    <div class="crit-liste" id="critListe"></div>
+    <button class="mini" id="critAjout">+ Ajouter un critère</button>
+    <div class="crit-pied">
+      <div class="crit-etat" id="critEtat"></div>
+      <div class="crit-btns">
+        <button class="act" id="critAnnuler">Annuler</button>
+        <button class="act act-go" id="critSauver">Enregistrer</button>
+      </div>
+    </div>
+    <div class="aide">Le coefficient pondère le critère dans la moyenne générale et dans le classement des viewers. ×1 = poids normal.</div>
+  </section>
+
+  <!-- ---- Segment ---- -->
+  <section class="card">
+    <div class="titre">Le segment</div>
+    <div class="actions">
+      <button class="act act-go" id="btnStart">Lancer le segment</button>
+      <button class="act" id="btnStop">Arrêter</button>
+      <button class="act act-danger" id="btnReset">Tout remettre à zéro</button>
+    </div>
+    <div class="aide">« Tout remettre à zéro » efface aussi les votes déjà reçus.</div>
+  </section>
+
+</main>
+
+<script type="module" src="./control.js"></script>
+</body>
+</html>

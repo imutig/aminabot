@@ -1,0 +1,34 @@
+[
+  {
+    "nom": "Le sommeil",
+    "coef": 1
+  },
+  {
+    "nom": "Vie sociale",
+    "coef": 1
+  },
+  {
+    "nom": "Motivation",
+    "coef": 1
+  },
+  {
+    "nom": "La bouffe",
+    "coef": 1
+  },
+  {
+    "nom": "Sport",
+    "coef": 1
+  },
+  {
+    "nom": "L'amour",
+    "coef": 1
+  },
+  {
+    "nom": "Petits plaisirs",
+    "coef": 1
+  },
+  {
+    "nom": "Semaine globale",
+    "coef": 1
+  }
+]

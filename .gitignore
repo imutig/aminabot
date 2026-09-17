@@ -1,0 +1,16 @@
+node_modules/
+dist/
+*.log
+
+# Secrets : ne JAMAIS versionner. Le depot est public.
+.env
+.env.local
+.env.*.local
+.twitch-refresh
+
+# Reglages personnels de l'editeur / de l'assistant
+.claude/settings.local.json
+
+# convex/_generated/ n'est VOLONTAIREMENT pas ignore.
+# Railway respecte .gitignore quand il televerse le projet : si ce dossier
+# etait exclu, le bot planterait au demarrage sur un import introuvable.

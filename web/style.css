@@ -1,0 +1,347 @@
+/* ============================================================
+   « Une famille en or » - socle : tokens, plateau, en-tete,
+   webcam, volet de transition, barre de commandes, boucles
+   ambiantes. Valeurs issues du handoff design (hifi).
+   ============================================================ */
+
+@font-face { font-family: 'Passion One'; font-weight: 900; font-display: block;
+  src: url('./fonts/passion-one-900.woff2') format('woff2'); }
+@font-face { font-family: 'Fredoka'; font-weight: 600; font-display: block;
+  src: url('./fonts/fredoka-600.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-weight: 800; font-display: block;
+  src: url('./fonts/nunito-800.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-weight: 900; font-display: block;
+  src: url('./fonts/nunito-900.woff2') format('woff2'); }
+
+:root {
+  --noir: #1B1016;
+  --rose-vif: #FF6FA8;
+  --rose-pastille: #FF8FBF;
+  --rose-clair: #FFC9E4;
+  --rose-borne: #FFD9EC;
+  --creme: #FDFBD8;
+  --jaune: #F9E96B;
+  --jaune-pale: #FAF6C0;
+  --cyan: #A9E7F2;
+  --orange: #F79B54;
+  --orange-pale: #FBC894;
+  --vert-pale: #D8F0AE;
+  --violet: #D9BDF2;
+  --blanc-rose: #FFF6FA;
+  --gris-terne: #8A7A80;
+  --creme-terne: #EDE7D6;
+
+  /* Trace du trou webcam : contour de l'ecran moins le rectangle arrondi de la
+     cam, combines en evenodd. Coordonnees du handoff : 1449, 729, 422 x 302,
+     rayon 30. Le rayon donne les coins arrondis de l'image webcam. */
+  --trou-cam: path(evenodd, "M0 0 H1920 V1080 H0 Z M1479 729 H1841 A30 30 0 0 1 1871 759 V1001 A30 30 0 0 1 1841 1031 H1479 A30 30 0 0 1 1449 1001 V759 A30 30 0 0 1 1479 729 Z");
+
+  --display: 'Passion One', system-ui, sans-serif;
+  --titre: 'Fredoka', system-ui, sans-serif;
+  --texte: 'Nunito', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: transparent;
+  overflow: hidden;
+  font-family: var(--texte);
+  color: var(--noir);
+  height: 100%;
+}
+/* En regie on a besoin d'un fond neutre pour voir le canvas ; en antenne la
+   page reste transparente sur ses bords, au cas ou la scene OBS deborde. */
+body.regie { background: #241820; overflow: auto; }
+
+.app { display: flex; flex-direction: column; align-items: center; }
+.cadre { position: relative; width: 1920px; height: 1080px; transform-origin: top center; }
+.canvas { position: absolute; inset: 0; overflow: hidden; }
+
+/* ---------------- Fond ---------------- */
+
+.fond { position: absolute; inset: 0; background: var(--rose-clair); transition: background .6s ease; }
+.fond.orange { background: var(--orange-pale); }
+.fond.cyan { background: var(--cyan); }
+
+.carrelage {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.5) 3px, transparent 3px),
+    linear-gradient(to bottom, rgba(255,255,255,.5) 3px, transparent 3px);
+  background-size: 120px 120px;
+}
+/* Etage 1 : une bande de lumiere traverse le carrelage, tres lentement. */
+.lueur {
+  position: absolute; top: -40%; left: 0; width: 46%; height: 180%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.42), transparent);
+  transform: translateX(-40%) rotate(16deg);
+  animation: lueurPasse 21s linear infinite;
+  pointer-events: none;
+}
+@keyframes lueurPasse {
+  from { transform: translateX(-40%) rotate(16deg); }
+  to   { transform: translateX(220%) rotate(16deg); }
+}
+
+/* ---- Le trou webcam ----
+
+   Un vrai trou transparent : la webcam se place DERRIERE l'overlay dans OBS et
+   apparait dedans, avec les coins arrondis du trace. C'est ce qui permet aussi
+   de la masquer a volonte depuis la regie.
+
+   Defaut connu et assume : quand une animation fait promouvoir un element en
+   calque composite, Chromium cesse parfois d'appliquer le decoupage de
+   l'ancetre et le fond repasse par-dessus la cam pendant quelques secondes. Le
+   plateau compte des dizaines d'animations en transform, on ne peut pas
+   l'eliminer sans renoncer au mouvement. Palliatif : la touche C (masquer puis
+   reafficher la cam) force le recalcul du decoupage et repare l'affichage. */
+
+.masque { position: absolute; inset: 0; }
+
+/* Chaque couche porte le decoupage, et surtout : chacune est promue en calque
+   composite.
+
+   C'est la cle du probleme. Un calque composite materiellement n'est PAS
+   decoupe par son calque parent : nos etoiles, titres et reflets animes en
+   transform devenaient des calques et sortaient du trou, laissant le fond
+   repasser par-dessus la cam. En promouvant la couche qui decoupe (translateZ),
+   le decoupage devient un decoupage de compositeur, applique a tout le
+   sous-arbre - les enfants composites y sont soumis a leur tour.
+
+   `contain: paint` renforce la contrainte : rien ne se peint hors des bornes. */
+.masque, .fond, .plateau, .volet {
+  clip-path: var(--trou-cam);
+  transform: translateZ(0);
+  contain: paint;
+}
+
+/* Cam masquee depuis la regie : plus de trou, on voit le jeu en entier. */
+body.sans-cam .masque,
+body.sans-cam .fond,
+body.sans-cam .plateau,
+body.sans-cam .volet { clip-path: none; contain: none; }
+body.sans-cam .cam { display: none; }
+
+.plateau { position: absolute; inset: 0; }
+
+/* ---------------- En-tete ---------------- */
+
+.entete {
+  position: absolute; left: 36px; right: 36px; top: 26px; height: 92px;
+  z-index: 40;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 44px;
+  background: var(--rose-vif);
+  border: 7px solid var(--noir);
+  border-radius: 999px;
+  box-shadow: 0 7px 0 var(--noir);
+}
+.entete-mot {
+  font-family: var(--texte); font-weight: 900; font-size: 34px; letter-spacing: 3px;
+  color: var(--blanc-rose);
+  -webkit-text-stroke: 1px var(--noir);
+  animation: motPulse 9s ease-in-out infinite;
+}
+.entete-mot:nth-child(2) { animation-delay: 3s; }
+.entete-mot:nth-child(3) { animation-delay: 6s; }
+@keyframes motPulse {
+  0%, 90%, 100% { transform: scale(1); }
+  94%           { transform: scale(1.08); }
+}
+
+/* ---------------- Cadre webcam ---------------- */
+
+.cam {
+  position: absolute; left: 1440px; top: 720px; width: 440px; height: 320px;
+  z-index: 50;
+  border: 9px solid var(--noir);
+  border-radius: 38px;
+  /* Transparent a l'antenne : c'est le trou qui laisse voir la webcam placee
+     derriere. Seul le cadre noir est peint. */
+  background: transparent;
+  display: grid; place-items: center;
+  pointer-events: none;
+}
+body.regie .cam { background: var(--vert-pale); }
+.cam-txt {
+  font-family: var(--display); font-weight: 900; font-size: 62px; letter-spacing: 8px;
+  color: var(--noir); opacity: 0; transition: opacity .3s ease;
+}
+body.regie .cam-txt { opacity: .35; }
+
+/* ---------------- Volet de transition ---------------- */
+
+.volet {
+  position: absolute; inset: 0; z-index: 30;
+  display: none;
+  pointer-events: none;
+  overflow: visible;
+}
+.volet.actif { display: block; }
+/* Le panneau deborde pour couvrir les coins malgre l'inclinaison ; c'est lui
+   qui bouge, le .volet ne sert que de boite a decouper. */
+.volet-panneau {
+  position: absolute; inset: -8% -14%;
+  transform: translateX(-108%) skewX(-8deg);
+}
+.volet-damier {
+  position: absolute; inset: 0;
+  background-image: conic-gradient(var(--rose-vif) 25%, var(--creme) 0 50%, var(--rose-vif) 0 75%, var(--creme) 0);
+  background-size: 180px 180px;
+}
+.volet-bord { position: absolute; top: 0; bottom: 0; right: 0; width: 60px; background: var(--noir); }
+.volet.entre .volet-panneau { animation: voletEntre .44s cubic-bezier(.5,0,.3,1) forwards; }
+.volet.sort .volet-panneau  { animation: voletSort .46s cubic-bezier(.6,0,.35,1) forwards; }
+@keyframes voletEntre { from { transform: translateX(-108%) skewX(-8deg); } to { transform: translateX(0) skewX(-8deg); } }
+@keyframes voletSort  { from { transform: translateX(0) skewX(-8deg); }     to { transform: translateX(112%) skewX(-8deg); } }
+
+/* ---------------- Barre de commandes (regie seulement) ---------------- */
+
+.barre { display: none; }
+body.regie .barre {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  width: 1920px; height: 132px;
+  padding: 0 36px;
+  background: var(--creme);
+  border: 8px solid var(--noir); border-top: none;
+  transform-origin: top center;
+}
+.barre-code {
+  display: inline-block;
+  background: var(--rose-vif); color: var(--blanc-rose);
+  border: 5px solid var(--noir); border-radius: 999px;
+  padding: 6px 22px;
+  font-family: var(--texte); font-weight: 900; font-size: 26px; letter-spacing: 1px;
+}
+.barre-ctx { font-family: var(--titre); font-weight: 600; font-size: 24px; color: var(--gris-terne); margin-top: 6px; }
+.barre-droite { display: flex; align-items: center; gap: 18px; }
+
+.btn {
+  position: relative;
+  border: 7px solid var(--noir); border-radius: 999px;
+  background: var(--jaune);
+  font-family: var(--titre); font-weight: 600; font-size: 34px;
+  height: 80px; padding: 0 34px;
+  cursor: pointer;
+  box-shadow: 0 7px 0 var(--noir);
+  transition: transform .13s ease, box-shadow .13s ease;
+}
+.btn::after {
+  content: ''; position: absolute; right: -12px; top: -12px; width: 36px; height: 36px;
+  background: var(--rose-vif);
+  clip-path: polygon(50% 0%, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0% 50%, 40% 40%);
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 10px 0 var(--noir); }
+.btn:active { transform: translateY(5px); box-shadow: 0 2px 0 var(--noir); }
+.btn.secondaire { background: var(--creme); height: 76px; border-width: 6px; font-size: 30px; }
+.btn.secondaire::after { display: none; }
+.btn:disabled { opacity: .45; cursor: default; transform: none; box-shadow: 0 7px 0 var(--noir); }
+
+.champ {
+  display: flex; align-items: center; gap: 12px;
+  background: #fff; border: 6px solid var(--noir); border-radius: 999px;
+  padding: 8px 16px;
+}
+.champ-lbl { font-family: var(--titre); font-weight: 600; font-size: 26px; }
+.champ-pm {
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 5px solid var(--noir); background: var(--rose-clair);
+  font-family: var(--texte); font-weight: 900; font-size: 30px; line-height: 1; cursor: pointer;
+}
+.champ-val { min-width: 46px; text-align: center; font-family: var(--texte); font-weight: 900; font-size: 36px; }
+
+.lien {
+  position: fixed; right: 14px; bottom: 12px; z-index: 99;
+  font-family: var(--texte); font-weight: 800; font-size: 13px;
+  color: #fff; opacity: .5; pointer-events: none;
+}
+body:not(.regie) .lien { display: none; }
+.lien.ko { color: #FFB8D4; opacity: 1; }
+
+/* ---------------- Primitives partagees ---------------- */
+
+/* Etoile a quatre branches, l'ornement recurrent du plateau. */
+.etoile {
+  position: absolute;
+  background: var(--creme);
+  clip-path: polygon(50% 0%, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0% 50%, 40% 40%);
+  animation: etoileTourne 11s ease-in-out infinite;
+}
+@keyframes etoileTourne {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50%      { transform: scale(1.22) rotate(45deg); }
+}
+
+/* Le grand cadre rose + sa carte creme. Present sur presque tous les ecrans. */
+.scene {
+  position: absolute; left: 40px; top: 150px; width: 1840px; height: 890px;
+  background: var(--rose-vif);
+  border: 9px solid var(--noir); border-radius: 52px;
+  box-shadow: 0 10px 0 var(--noir);
+  overflow: visible;
+}
+.scene-carte {
+  position: absolute; inset: 26px;
+  background: var(--creme);
+  border: 8px solid var(--noir); border-radius: 34px;
+  overflow: hidden;
+}
+/* Brillance qui parcourt la bordure du cadre, de loin en loin. */
+.scene::after {
+  content: ''; position: absolute; inset: 0; border-radius: 52px;
+  background: linear-gradient(100deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%);
+  background-size: 220% 100%;
+  animation: brillance 15s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes brillance {
+  0%, 88%, 100% { background-position: 320% 0; }
+  92%           { background-position: -120% 0; }
+}
+
+.scene-titre {
+  position: absolute; left: 70px; top: -34px; height: 76px; z-index: 2;
+  display: flex; align-items: center;
+  padding: 0 34px;
+  background: var(--creme);
+  border: 8px solid var(--noir); border-radius: 999px;
+  font-family: var(--titre); font-weight: 600; font-size: 40px;
+}
+
+.compteur {
+  position: absolute; right: -24px; top: -42px; width: 170px; height: 170px; z-index: 3;
+  background: var(--jaune);
+  border: 9px solid var(--noir); border-radius: 50%;
+  display: grid; place-items: center;
+  box-shadow: 0 8px 0 var(--noir);
+}
+.compteur.bump { animation: bump .34s cubic-bezier(.2,.9,.28,1.12); }
+@keyframes bump { 0% { transform: scale(1); } 45% { transform: scale(1.12); } 100% { transform: scale(1); } }
+.compteur-n { font-family: var(--texte); font-weight: 900; font-size: 62px; font-variant-numeric: tabular-nums; }
+
+/* Nombre qui roule : deux valeurs empilees, on translate d'une hauteur. */
+.roll { display: inline-block; overflow: hidden; vertical-align: bottom; }
+.roll-piste { display: flex; flex-direction: column; transition: transform .42s cubic-bezier(.22,.9,.28,1.08); }
+
+/* Pastille de pseudo */
+.pseudo {
+  display: flex; align-items: center;
+  background: var(--rose-pastille);
+  border: 5px solid var(--noir); border-radius: 999px;
+  padding: 0 26px;
+  font-family: var(--texte); font-weight: 900; font-size: 30px;
+  color: var(--noir);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  box-shadow: 0 5px 0 var(--noir);
+}
+.pseudo.entre { animation: pseudoEntre .5s cubic-bezier(.2,.9,.3,1.1) both; }
+@keyframes pseudoEntre {
+  0%   { opacity: 0; transform: translateY(46px) scale(.94); }
+  70%  { opacity: 1; transform: translateY(-5px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Bouton de barre en position « active » (ex. cam masquée) : on doit voir d'un
+   coup d'oeil qu'un reglage n'est pas dans son etat normal. */
+.btn.secondaire.actif { background: var(--rose-vif); color: var(--blanc-rose); }

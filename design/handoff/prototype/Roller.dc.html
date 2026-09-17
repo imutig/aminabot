@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<span style="display:inline-block;overflow:hidden;height:1em;line-height:1em;vertical-align:bottom;font-variant-numeric:tabular-nums">
+  <span ref="{{ innerRef }}" style="display:block;will-change:transform;transform:translateY(-50%)">
+    <span style="display:block;height:1em;line-height:1em">{{ prev }}</span>
+    <span style="display:block;height:1em;line-height:1em">{{ cur }}</span>
+  </span>
+</span>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:160,&quot;height&quot;:80},&quot;value&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:42,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.innerRef = React.createRef();
+    this.state = { prev: p.value ?? 0, cur: p.value ?? 0 };
+  }
+  roll() {
+    requestAnimationFrame(() => {
+      const el = this.innerRef.current;
+      if (!el) return;
+      el.style.transition = 'none';
+      el.style.transform = 'translateY(0)';
+      void el.offsetHeight;
+      el.style.transition = 'transform .42s cubic-bezier(.22,.9,.28,1.08)';
+      el.style.transform = 'translateY(-50%)';
+    });
+  }
+  renderVals() {
+    const v = this.props.value ?? 0;
+    if (this._v === undefined) { this._v = v; this._prev = v; }
+    if (v !== this._v) { this._prev = this._v; this._v = v; this.roll(); }
+    return { innerRef: this.innerRef, prev: this._prev, cur: v };
+  }
+}
+</script>
+</body>
+</html>

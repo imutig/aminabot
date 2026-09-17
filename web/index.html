@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Une famille en or</title>
+<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="./screens.css">
+</head>
+<body>
+
+<!-- Le trou webcam est découpé en CSS (clip-path sur .masque, voir style.css).
+     Pas de <mask> SVG ici : Chromium - donc OBS - ne suit pas de façon fiable
+     une référence `mask: url(#id)` depuis un élément HTML. -->
+
+<div class="app" id="app">
+  <div class="cadre" id="cadre">
+    <div class="canvas" id="canvas">
+
+      <!-- Tout ce qui doit etre perce par le trou webcam vit ici : le fond, le
+           jeu ET le volet de transition. Si le fond restait dehors il peindrait
+           dans le trou, et le volet recouvrirait la cam a chaque transition. -->
+      <div class="masque" id="masque">
+
+        <!-- Fond : carrelage + balayage de lumiere. Couleur selon l'ecran. -->
+        <div class="fond" id="fond">
+          <div class="carrelage"></div>
+          <div class="lueur"></div>
+        </div>
+
+        <!-- Le plateau : tout le contenu de jeu. -->
+        <div class="plateau" id="plateau"></div>
+
+        <!-- Volet de transition, sous l'en-tete et la webcam -->
+        <div class="volet" id="volet">
+          <div class="volet-panneau"><div class="volet-damier"></div><div class="volet-bord"></div></div>
+        </div>
+
+      </div>
+
+      <!-- En-tete : ne bouge jamais, jamais recouvert -->
+      <div class="entete" id="entete">
+        <span class="entete-mot">LET'S PLAY</span>
+        <span class="entete-mot">GAME</span>
+        <span class="entete-mot">TOGETHER</span>
+      </div>
+
+      <!-- Cadre webcam : position fixe sur tous les ecrans, au-dessus de tout -->
+      <div class="cam" id="cam"><span class="cam-txt">CAM</span></div>
+
+    </div>
+  </div>
+
+  <!-- Barre de commandes : n'existe qu'en regie, s'ajoute SOUS le canvas -->
+  <div class="barre" id="barre">
+    <div class="barre-gauche">
+      <div class="barre-code" id="barreCode">-</div>
+      <div class="barre-ctx" id="barreCtx"></div>
+    </div>
+    <div class="barre-droite" id="barreActions"></div>
+  </div>
+</div>
+
+<div class="lien" id="lien">connexion…</div>
+
+<script type="module" src="./main.js"></script>
+</body>
+</html>

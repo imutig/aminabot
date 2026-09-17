@@ -1,0 +1,28 @@
+{
+  "name": "famille-en-or",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Jeu Twitch « Une famille en or » - overlay OBS + regie, donnees sur Convex",
+  "type": "module",
+  "scripts": {
+    "dev": "convex dev",
+    "web": "vite",
+    "//": "--env-file-if-exists : en production les variables viennent du service, pas d'un fichier",
+    "bot": "node --env-file-if-exists=.env --env-file-if-exists=.env.local bot/start.js",
+    "token": "node --env-file-if-exists=.env bot/obtenir-token.js",
+    "build": "vite build",
+    "start": "node server/index.js",
+    "preview": "vite preview",
+    "notes": "npm --prefix notes-de-la-semaine start",
+    "notes:demo": "npm --prefix notes-de-la-semaine run demo",
+    "notes:installer": "npm --prefix notes-de-la-semaine install"
+  },
+  "dependencies": {
+    "convex": "^1.43.0",
+    "tmi.js": "^1.8.5",
+    "vite": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

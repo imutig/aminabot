@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
+  a { color: #E8548F; text-decoration: none; }
+  a:hover { color: #A8386A; }
+  @keyframes loopRight { from { transform: translateX(-1920px); } to { transform: translateX(0px); } }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes breathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+  @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(.6); } 50% { opacity: .85; transform: scale(1); } }
+  @keyframes stampIn { 0% { transform: scale(1.7); opacity: 0; } 55% { transform: scale(.96); opacity: 1; } 100% { transform: scale(1); } }
+  @keyframes ring { 0% { transform: scale(.6); opacity: .4; } 100% { transform: scale(2.1); opacity: 0; } }
+  @keyframes waitSweep { 0% { transform: translateX(-110%); } 100% { transform: translateX(360%); } }
+  @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes hintNudge { 0%, 90%, 100% { transform: translateY(0) rotate(0deg); } 94% { transform: translateY(-6px) rotate(-.4deg); } 97% { transform: translateY(0) rotate(.3deg); } }
+  @keyframes fallDrop { 0% { transform: translateY(0) scaleY(.8); opacity: 0; } 18% { opacity: .9; } 100% { transform: translateY(180px) scaleY(1.2); opacity: 0; } }
+  @keyframes fallConf { 0% { transform: translateY(-40px) rotate(0deg); opacity: 0; } 14% { opacity: .95; } 100% { transform: translateY(680px) rotate(520deg); opacity: 0; } }
+  @keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+</style>
+</helmet>
+<div style="position: fixed; inset: 0; overflow: hidden; background: transparent; font-family: Nunito, sans-serif;">
+<div style="position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; margin-left: -960px; margin-top: -540px;">
+<div style="position: absolute; inset: 0; transform-origin: center center; transform: scale({{ fit }});">
+
+  <svg viewBox="0 0 1920 1080" style="position: absolute; left: 0; top: 0; width: 1920px; height: 1080px;">
+    <defs>
+      <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#79BEEC"></stop>
+        <stop offset="0.55" stop-color="#9FD2F2"></stop>
+        <stop offset="1" stop-color="#BFE3F8"></stop>
+      </linearGradient>
+      <mask id="camHoleSky" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">
+        <rect x="0" y="0" width="1920" height="1080" fill="#FFFFFF"></rect>
+        <g fill="#000000" transform="translate({{ camX }} {{ camY }})">
+          <path d="M -505 -284 A 60 60 0 0 1 -404 -284 A 60 60 0 0 1 -303 -284 A 60 60 0 0 1 -202 -284 A 60 60 0 0 1 -101 -284 A 60 60 0 0 1 0 -284 A 60 60 0 0 1 101 -284 A 60 60 0 0 1 202 -284 A 60 60 0 0 1 303 -284 A 60 60 0 0 1 404 -284 A 60 60 0 0 1 505 -284 A 56 56 0 0 1 505 -189 A 56 56 0 0 1 505 -95 A 56 56 0 0 1 505 0 A 56 56 0 0 1 505 95 A 56 56 0 0 1 505 189 A 56 56 0 0 1 505 284 A 60 60 0 0 1 404 284 A 60 60 0 0 1 303 284 A 60 60 0 0 1 202 284 A 60 60 0 0 1 101 284 A 60 60 0 0 1 0 284 A 60 60 0 0 1 -101 284 A 60 60 0 0 1 -202 284 A 60 60 0 0 1 -303 284 A 60 60 0 0 1 -404 284 A 60 60 0 0 1 -505 284 A 56 56 0 0 1 -505 189 A 56 56 0 0 1 -505 95 A 56 56 0 0 1 -505 0 A 56 56 0 0 1 -505 -95 A 56 56 0 0 1 -505 -189 A 56 56 0 0 1 -505 -284 Z"></path>
+        </g>
+      </mask>
+    </defs>
+    <g mask="url(#camHoleSky)">
+      <rect x="0" y="0" width="1920" height="1080" fill="url(#skyGrad)"></rect>
+      <rect x="0" y="0" width="1920" height="1080" fill="{{ moodFill }}" opacity="{{ moodOp }}" style="transition: opacity 1s ease, fill 1s ease;"></rect>
+      <g opacity=".5">
+        <g style="transform-box: view-box; transform-origin: 0 0; animation: loopRight 210s linear infinite;">
+          <g transform="translate(0 0)">
+            <g transform="translate(60 84) scale(.78)" fill="#E3F1FC"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g>
+            <g transform="translate(620 36) scale(.9)" fill="#E9F4FD"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+            <g transform="translate(1120 120) scale(.85)" fill="#E3F1FC"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g>
+            <g transform="translate(1540 54) scale(.72)" fill="#E9F4FD"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+          </g>
+          <g transform="translate(1920 0)">
+            <g transform="translate(60 84) scale(.78)" fill="#E3F1FC"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g>
+            <g transform="translate(620 36) scale(.9)" fill="#E9F4FD"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+            <g transform="translate(1120 120) scale(.85)" fill="#E3F1FC"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g>
+            <g transform="translate(1540 54) scale(.72)" fill="#E9F4FD"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+          </g>
+        </g>
+      </g>
+      <g opacity=".8">
+        <g style="transform-box: view-box; transform-origin: 0 0; animation: loopRight 145s linear infinite;">
+          <g transform="translate(0 0)">
+            <g transform="translate(170 296) scale(1.05)"><g fill="#C6E3F6"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g><g transform="translate(0 6) scale(.93)" fill="#F4FAFE"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></g>
+            <g transform="translate(780 232) scale(.95)"><g fill="#C6E3F6"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g><g transform="translate(0 6) scale(.96)" fill="#F4FAFE"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g></g>
+            <g transform="translate(1330 318) scale(1.1)"><g fill="#C6E3F6"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 6) scale(.95)" fill="#F4FAFE"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></g>
+          </g>
+          <g transform="translate(1920 0)">
+            <g transform="translate(170 296) scale(1.05)"><g fill="#C6E3F6"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g><g transform="translate(0 6) scale(.93)" fill="#F4FAFE"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></g>
+            <g transform="translate(780 232) scale(.95)"><g fill="#C6E3F6"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g><g transform="translate(0 6) scale(.96)" fill="#F4FAFE"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g></g>
+            <g transform="translate(1330 318) scale(1.1)"><g fill="#C6E3F6"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 6) scale(.95)" fill="#F4FAFE"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></g>
+          </g>
+        </g>
+      </g>
+      <g>
+        <g style="transform-box: view-box; transform-origin: 0 0; animation: loopRight 98s linear infinite;">
+          <g transform="translate(0 0)">
+            <g transform="translate(-40 872) scale(1.3)"><g fill="#B9DCF3"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g><g transform="translate(0 7) scale(.965)" fill="#FFFFFF"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g></g>
+            <g transform="translate(700 904) scale(1.4)"><g fill="#B9DCF3"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 7) scale(.955)" fill="#FFFFFF"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></g>
+            <g transform="translate(1320 852) scale(1.45)"><g fill="#B9DCF3"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g><g transform="translate(0 7) scale(.94)" fill="#FFFFFF"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></g>
+          </g>
+          <g transform="translate(1920 0)">
+            <g transform="translate(-40 872) scale(1.3)"><g fill="#B9DCF3"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g><g transform="translate(0 7) scale(.965)" fill="#FFFFFF"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g></g>
+            <g transform="translate(700 904) scale(1.4)"><g fill="#B9DCF3"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 7) scale(.955)" fill="#FFFFFF"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></g>
+            <g transform="translate(1320 852) scale(1.45)"><g fill="#B9DCF3"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g><g transform="translate(0 7) scale(.94)" fill="#FFFFFF"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+
+  <div style="position: absolute; left: {{ colLeft }}px; top: {{ panelTop }}px; width: {{ colW }}px; opacity: {{ panelOp }}; transform: translateY({{ panelY }}px); transition: top .8s cubic-bezier(.5,.02,.3,1), opacity .55s ease, transform .7s cubic-bezier(.4,0,.3,1);">
+    <svg viewBox="0 0 240 130" style="position: absolute; left: 5%; top: -54px; width: 168px; height: 91px;"><g fill="#D9EBF8"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 5) scale(.95)" fill="#FFFDFB"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></svg>
+    <svg viewBox="0 0 180 110" style="position: absolute; right: 7%; top: -42px; width: 132px; height: 81px;"><g fill="#D9EBF8"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g><g transform="translate(0 5) scale(.94)" fill="#FFFDFB"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></svg>
+    <div style="position: relative; background: #FFFDFB; border: 3px solid #EFD3E4; border-radius: 36px; padding: {{ panelPad }}px; box-sizing: border-box; box-shadow: 0 18px 40px -26px rgba(46,76,104,.55); transition: padding .8s cubic-bezier(.5,.02,.3,1);">
+      <div style="display: flex; flex-direction: column; gap: {{ headGap }}px;">
+        <div style="font-family: 'Baloo 2', cursive; font-weight: 800; font-size: {{ titleFs }}px; line-height: 1; letter-spacing: .4px; color: #A8386A; text-transform: uppercase; text-wrap: balance; transition: font-size .8s cubic-bezier(.5,.02,.3,1);">Les notes de la semaine</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <div style="background: #FFF0F6; border: 2px solid #F5C6DC; color: #A8386A; font-weight: 800; font-size: {{ dateFs }}px; padding: {{ datePadY }}px {{ datePadX }}px; border-radius: 999px; white-space: nowrap; transition: font-size .8s ease, padding .8s ease;">{{ week }}</div>
+          <div style="display: flex; gap: {{ colGap }}px; opacity: {{ colHeadOp }}; transition: opacity .5s ease;">
+            <div style="width: {{ gaugeW }}px; text-align: center; font-weight: 900; font-size: {{ colFs }}px; letter-spacing: 1.4px; color: #BB6690; text-transform: uppercase;">{{ amina }}</div>
+            <div style="width: {{ gaugeW }}px; text-align: center; font-weight: 900; font-size: {{ colFs }}px; letter-spacing: 1.4px; color: #7E8FC0; text-transform: uppercase;">Chat</div>
+          </div>
+        </div>
+      </div>
+
+      <sc-if value="{{ showTable }}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; gap: {{ rowGap }}px; margin-top: {{ listTop }}px;">
+        <sc-for list="{{ rows }}" as="row" hint-placeholder-count="8">
+          <div style="position: relative; display: flex; align-items: center; gap: 11px; background: {{ row.bg }}; border: {{ row.border }}; border-radius: 22px; padding: 0 {{ row.padX }}px; height: {{ row.h }}px; box-sizing: border-box; overflow: hidden; opacity: {{ row.op }}; transform: translateY({{ row.ty }}px) translateX({{ row.tx }}px); box-shadow: {{ row.shadow }}; animation: {{ row.anim }}; transition-property: opacity, transform, background, box-shadow, border-color, height; transition-duration: .5s, .6s, .5s, .5s, .5s, .55s; transition-timing-function: cubic-bezier(.33,1,.68,1), cubic-bezier(.2,1.05,.3,1), ease, ease, ease, cubic-bezier(.33,1,.68,1); transition-delay: {{ row.delay }}ms;">
+            <div style="flex: none; position: relative; width: 38px; height: 38px; display: grid; place-items: center;">
+              <svg viewBox="0 0 180 110" style="position: absolute; inset: 0; width: 100%; height: 100%;"><g fill="{{ row.tintEdge }}"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g><g transform="translate(0 5) scale(.93)" fill="{{ row.tint }}"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></svg>
+              <div style="position: relative; top: 2px; width: {{ row.mw }}px; height: {{ row.mh }}px; border-radius: {{ row.mr }}; transform: rotate({{ row.mrot }}deg); background: #FFFDFB;"></div>
+            </div>
+            <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+              <div style="font-weight: 800; font-size: 19px; color: {{ row.labelColor }}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ row.name }}</div>
+              <div style="display: flex; align-items: center; gap: 6px; height: 24px; overflow: hidden;">
+                <div style="flex: none; display: flex; align-items: center; gap: 5px; background: #FFF0F6; border: 2px solid #F5D0E1; border-radius: 999px; padding: 1px 9px; white-space: nowrap; opacity: {{ row.votesOp }}; transform: scale({{ row.pulse }}); transition: transform .18s cubic-bezier(.2,1.3,.3,1), opacity .4s ease;">
+                  <div style="width: 6px; height: 6px; border-radius: 50%; background: {{ row.dotColor }}; transition: background .3s ease;"></div>
+                  <div style="font-weight: 800; font-size: 15px; color: #A8386A; font-variant-numeric: tabular-nums;">{{ row.votesText }}</div>
+                </div>
+                <sc-if value="{{ row.hasVerdict }}">
+                  <div style="flex: none; font-weight: 800; font-size: 15px; color: {{ row.verdictColor }}; background: {{ row.verdictBg }}; border-radius: 999px; padding: 1px 10px; white-space: nowrap;">{{ row.verdict }}</div>
+                </sc-if>
+              </div>
+            </div>
+
+            <div style="flex: none; width: {{ gaugeW }}px; display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: {{ row.gaugeOp }}; transition: opacity .5s ease;">
+              <div style="position: relative; font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 32px; line-height: 1; color: {{ row.aColor }}; font-variant-numeric: tabular-nums; animation: {{ row.aAnim }}; transition: color .4s ease;">{{ row.aText }}
+                <sc-if value="{{ row.aShock }}">
+                  <div style="position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%; border: 3px solid #F58EBA; animation: ring .75s cubic-bezier(.22,1,.36,1) forwards;"></div>
+                </sc-if>
+              </div>
+              <div style="position: relative; width: 100%; height: 13px; border-radius: 999px; overflow: hidden; background: #FFF0F6; box-shadow: inset 0 0 0 2px #F3CCDF; background-image: repeating-linear-gradient(90deg, rgba(168,56,106,.13) 0 2px, transparent 2px 10%);">
+                <div style="position: absolute; inset: 0 auto 0 0; width: {{ row.aPct }}%; border-radius: 999px; background: #F58EBA; transition: width .5s cubic-bezier(.22,1,.36,1);"></div>
+                <sc-if value="{{ row.aWaiting }}">
+                  <div style="position: absolute; top: 0; bottom: 0; left: 0; width: 24%; border-radius: 999px; background: rgba(245,142,186,.4); animation: waitSweep 2.2s cubic-bezier(.45,0,.55,1) infinite;"></div>
+                </sc-if>
+              </div>
+            </div>
+
+            <div style="flex: none; width: {{ gaugeW }}px; display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: {{ row.gaugeOp }}; transition: opacity .5s ease;">
+              <div style="font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 32px; line-height: 1; color: {{ row.cColor }}; font-variant-numeric: tabular-nums; transition: color .5s ease;">{{ row.cText }}</div>
+              <div style="position: relative; width: 100%; height: 13px; border-radius: 999px; overflow: hidden; background: #EFF5FD; box-shadow: inset 0 0 0 2px #D3E3F5; background-image: repeating-linear-gradient(90deg, rgba(46,76,104,.12) 0 2px, transparent 2px 10%);">
+                <div style="position: absolute; inset: 0 auto 0 0; width: {{ row.cPct }}%; border-radius: 999px; background: {{ row.cFill }}; transition: width .45s cubic-bezier(.22,.9,.24,1), background .5s ease;"></div>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ showGlobal }}">
+        <div style="display: flex; align-items: center; gap: 10px; margin-top: 12px; background: #FFF0F6; border: 3px solid #F5C6DC; border-radius: 22px; padding: 10px 16px; animation: stampIn .6s cubic-bezier(.22,1.25,.4,1) both;">
+          <div style="flex: 1 1 auto; font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 23px; line-height: 1.05; color: #A8386A; text-transform: uppercase; letter-spacing: .5px;">Moyenne générale</div>
+          <div style="flex: none; width: {{ gaugeW }}px; text-align: center; font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 38px; line-height: 1; color: #E8548F; font-variant-numeric: tabular-nums;">{{ globalA }}</div>
+          <div style="flex: none; width: {{ gaugeW }}px; text-align: center; font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 38px; line-height: 1; color: #5D77B0; font-variant-numeric: tabular-nums;">{{ globalC }}</div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <sc-if value="{{ showHof }}">
+    <div style="position: absolute; left: {{ colLeft }}px; top: 190px; width: {{ colW }}px; opacity: {{ hofOp }}; transform: translateY({{ hofY }}px); transition: opacity .6s ease, transform .75s cubic-bezier(.2,1.05,.3,1);">
+      <div style="position: absolute; left: 50%; top: 50%; width: 940px; height: 940px; margin: -470px 0 0 -470px; opacity: {{ raysOp }}; animation: spinSlow 72s linear infinite; transition: opacity 1s ease;">
+        <sc-for list="{{ rays }}" as="ray" hint-placeholder-count="8">
+          <div style="position: absolute; left: 50%; top: 50%; width: 16px; height: 466px; margin-left: -8px; transform-origin: 50% 0; transform: rotate({{ ray.rot }}deg); background: linear-gradient(180deg, rgba(255,214,102,.42), rgba(255,214,102,0)); border-radius: 999px;"></div>
+        </sc-for>
+      </div>
+
+      <div style="position: absolute; left: 50%; top: -96px; margin-left: -150px; width: 300px; height: 200px; opacity: {{ rainOp }}; transition: opacity .8s ease;">
+        <svg viewBox="0 0 240 130" style="position: absolute; left: 0; top: 0; width: 300px; height: 162px; animation: floatUp 6.5s ease-in-out infinite;"><g fill="#8FA8C6"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 5) scale(.95)" fill="#B4C9E0"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></svg>
+        <sc-for list="{{ drops }}" as="d" hint-placeholder-count="12">
+          <div style="position: absolute; left: {{ d.left }}px; top: 116px; width: 6px; height: 17px; border-radius: 999px; background: #8FA8C6; opacity: 0; animation: fallDrop {{ d.dur }}s cubic-bezier(.4,0,.7,1) {{ d.delay }}s infinite;"></div>
+        </sc-for>
+      </div>
+
+      <div style="position: relative; background: {{ hofBg }}; border: 4px solid {{ hofBorder }}; border-radius: 40px; padding: 34px 34px 38px; text-align: center; box-sizing: border-box; box-shadow: 0 22px 46px -30px rgba(46,76,104,.6); animation: floatUp 10s ease-in-out infinite; transition: background 1s ease, border-color 1s ease;">
+        <div style="display: inline-block; background: {{ hofChipBg }}; border: 2px solid {{ hofChipBorder }}; color: {{ hofChipFg }}; font-weight: 900; font-size: 18px; letter-spacing: 2.4px; text-transform: uppercase; padding: 6px 18px; border-radius: 999px; opacity: {{ st1 }}; transform: translateY({{ st1y }}px); transition: opacity .5s ease, transform .55s cubic-bezier(.2,1.1,.3,1), background 1s ease, color 1s ease, border-color 1s ease;">Hall of fame</div>
+        <div style="font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 54px; line-height: 1.04; color: {{ hofTitleColor }}; margin-top: 12px; opacity: {{ st1 }}; transform: translateY({{ st1y }}px); transition: opacity .55s ease .06s, transform .6s cubic-bezier(.2,1.1,.3,1) .06s, color 1s ease;">{{ hofTitle }}</div>
+        <div style="font-weight: 700; font-size: 21px; color: {{ hofSubColor }}; margin-top: 4px; opacity: {{ st1 }}; transition: opacity .55s ease .12s, color 1s ease;">{{ hofSub }}</div>
+        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 22px; opacity: {{ st2 }}; transform: translateY({{ st2y }}px); transition: opacity .55s ease, transform .65s cubic-bezier(.2,1.1,.3,1);">
+          <sc-for list="{{ hofNames }}" as="n" hint-placeholder-count="2">
+            <div style="background: {{ hofPseudoBg }}; border: 3px solid {{ hofPseudoBorder }}; border-radius: 20px; padding: 9px 20px; font-family: 'Baloo 2', cursive; font-weight: 800; font-size: {{ hofNameFs }}px; color: {{ hofNameColor }}; transition: background 1s ease, color 1s ease, border-color 1s ease;">{{ n.label }}</div>
+          </sc-for>
+        </div>
+        <div style="font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 124px; line-height: 1; color: {{ hofScoreColor }}; font-variant-numeric: tabular-nums; margin-top: 6px; opacity: {{ st3 }}; transform: scale({{ st3s }}); transition: opacity .4s ease, transform .65s cubic-bezier(.2,1.35,.4,1), color 1s ease;">{{ hofScore }}<span style="font-size: 54px; opacity: .5;">/10</span></div>
+        <div style="font-weight: 800; font-size: 17px; letter-spacing: 1.6px; text-transform: uppercase; color: {{ hofSubColor }}; opacity: {{ st3 }}; transition: opacity .45s ease .1s;">{{ hofFoot }}</div>
+      </div>
+
+      <div style="position: absolute; inset: -50px -30px 0; overflow: hidden; height: 720px; pointer-events: none; opacity: {{ confettiOp }}; transition: opacity .6s ease;">
+        <sc-for list="{{ confetti }}" as="c" hint-placeholder-count="16">
+          <div style="position: absolute; top: 0; left: {{ c.left }}%; width: {{ c.w }}px; height: {{ c.h }}px; border-radius: {{ c.r }}; background: {{ c.color }}; opacity: 0; animation: fallConf {{ c.dur }}s cubic-bezier(.35,.1,.6,1) {{ c.delay }}s infinite;"></div>
+        </sc-for>
+      </div>
+      <sc-for list="{{ sparks }}" as="s" hint-placeholder-count="6">
+        <div style="position: absolute; left: {{ s.left }}%; top: {{ s.top }}%; width: {{ s.size }}px; height: {{ s.size }}px; background: {{ s.color }}; border-radius: 50%; opacity: {{ sparkOp }}; animation: twinkle {{ s.dur }}s ease-in-out {{ s.delay }}s infinite;"></div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showRank }}">
+    <div style="position: absolute; left: {{ colLeft }}px; top: 62px; width: {{ colW }}px; opacity: {{ rankOp }}; transform: translateY({{ rankY }}px); transition: opacity .55s ease, transform .75s cubic-bezier(.2,1.05,.3,1);">
+      <div style="text-align: center; font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 44px; line-height: 1.05; color: #A8386A; text-transform: uppercase; letter-spacing: .6px;">Classement de la semaine</div>
+      <div style="text-align: center; font-weight: 700; font-size: 19px; color: #4E6E96; margin-top: 2px;">{{ rankCountLabel }}</div>
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 18px;">
+        <sc-for list="{{ podium }}" as="p" hint-placeholder-count="3">
+          <div style="flex: 1 1 0; min-width: 0; background: {{ p.bg }}; border: 3px solid {{ p.border }}; border-radius: 24px; padding: 14px 10px 16px; text-align: center; box-sizing: border-box; box-shadow: 0 14px 30px -22px rgba(46,76,104,.6); transform: translateY({{ p.lift }}px);">
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: {{ p.badgeBg }}; border: 2px solid {{ p.badgeBorder }}; color: {{ p.badgeFg }}; font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 22px;">{{ p.rank }}</div>
+            <div style="margin-top: 6px; font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 21px; color: #3D1730; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ p.name }}</div>
+            <div style="font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 42px; line-height: 1; color: {{ p.scoreColor }}; font-variant-numeric: tabular-nums;">{{ p.avg }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="position: relative; margin-top: 16px; height: 542px; overflow: hidden; background: #FFFDFB; border: 3px solid #EFD3E4; border-radius: 28px; padding: 14px 16px; box-sizing: border-box; box-shadow: 0 18px 40px -28px rgba(46,76,104,.55);">
+        <div style="position: relative; height: 100%; overflow: hidden; mask-image: linear-gradient(180deg, transparent 0, #000 46px, #000 calc(100% - 46px), transparent 100%); -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 46px, #000 calc(100% - 46px), transparent 100%);">
+          <div style="display: flex; flex-direction: column; gap: 5px; transform: translateY({{ scrollY }}px); transition: transform {{ scrollDur }}s linear;">
+            <sc-for list="{{ rest }}" as="r" hint-placeholder-count="10">
+              <div style="display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 12px; border-radius: 14px; background: {{ r.bg }}; box-sizing: border-box;">
+                <div style="flex: none; width: 46px; font-weight: 900; font-size: 17px; color: #BB6690; font-variant-numeric: tabular-nums;">{{ r.rank }}</div>
+                <div style="flex: 1 1 auto; min-width: 0; font-weight: 700; font-size: 19px; color: #3D1730; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ r.name }}</div>
+                <div style="flex: none; width: 84px; height: 9px; border-radius: 999px; background: #EFF5FD; box-shadow: inset 0 0 0 2px #D3E3F5; overflow: hidden;">
+                  <div style="height: 100%; width: {{ r.pct }}%; border-radius: 999px; background: {{ r.color }};"></div>
+                </div>
+                <div style="flex: none; width: 54px; text-align: right; font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 23px; color: {{ r.color }}; font-variant-numeric: tabular-nums;">{{ r.avg }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="position: absolute; left: {{ stripLeft }}px; top: 800px; width: {{ stripW }}px; height: 200px;">
+    <div style="position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: center; justify-content: center; gap: 14px; background: #FFFDFB; border: 3px solid #EFD3E4; border-radius: 999px; padding: 15px 26px; box-sizing: border-box; box-shadow: 0 14px 32px -22px rgba(46,76,104,.7); opacity: {{ hintOp }}; transform: translateY({{ hintY }}px); animation: hintNudge 16s ease-in-out infinite; transition: opacity .55s ease, transform .7s cubic-bezier(.2,1.05,.3,1);">
+      <div style="flex: none; background: #FFF0F6; border: 2px solid #F5C6DC; color: #A8386A; font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 26px; padding: 3px 16px; border-radius: 999px;">0 → 10</div>
+      <div style="font-weight: 800; font-size: 26px; color: #3D1730; white-space: nowrap;">Note ta semaine : tape un chiffre de 0 à 10 dans le chat</div>
+    </div>
+
+    <div style="position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: center; gap: 20px; background: #FFFDFB; border: 3px solid #EFD3E4; border-radius: 34px; padding: 16px 26px; box-sizing: border-box; box-shadow: 0 14px 32px -22px rgba(46,76,104,.7); opacity: {{ calcOp }}; transform: translateY({{ calcY }}px); transition: opacity .55s ease, transform .7s cubic-bezier(.2,1.05,.3,1);">
+      <div style="position: relative; flex: none; width: 72px; height: 72px; animation: spinSlow 12s linear infinite;">
+        <svg viewBox="0 0 180 110" style="position: absolute; left: 0; top: 12px; width: 50px; height: 31px;"><g fill="#F5C6DC"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></svg>
+        <svg viewBox="0 0 180 110" style="position: absolute; right: 0; bottom: 8px; width: 42px; height: 26px;"><g fill="#CFE0F5"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></svg>
+      </div>
+      <div style="flex: 1 1 auto; min-width: 0;">
+        <div style="display: flex; align-items: baseline; gap: 12px;">
+          <div style="font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 34px; color: #A8386A; white-space: nowrap;">Calcul des notes…</div>
+          <div style="font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 34px; color: #BB6690; font-variant-numeric: tabular-nums;">{{ calcScramble }}</div>
+        </div>
+        <div style="margin-top: 8px; height: 15px; border-radius: 999px; background: #FFF0F6; box-shadow: inset 0 0 0 2px #F3CCDF; overflow: hidden;">
+          <div style="height: 100%; width: {{ calcPct }}%; border-radius: 999px; background: #F58EBA; transition: width .3s linear;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 1920 1080" style="position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none;">
+    <defs>
+      <mask id="camHoleCurtain" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">
+        <rect x="0" y="0" width="1920" height="1080" fill="#FFFFFF"></rect>
+        <g fill="#000000" transform="translate({{ camX }} {{ camY }})">
+          <path d="M -505 -284 A 60 60 0 0 1 -404 -284 A 60 60 0 0 1 -303 -284 A 60 60 0 0 1 -202 -284 A 60 60 0 0 1 -101 -284 A 60 60 0 0 1 0 -284 A 60 60 0 0 1 101 -284 A 60 60 0 0 1 202 -284 A 60 60 0 0 1 303 -284 A 60 60 0 0 1 404 -284 A 60 60 0 0 1 505 -284 A 56 56 0 0 1 505 -189 A 56 56 0 0 1 505 -95 A 56 56 0 0 1 505 0 A 56 56 0 0 1 505 95 A 56 56 0 0 1 505 189 A 56 56 0 0 1 505 284 A 60 60 0 0 1 404 284 A 60 60 0 0 1 303 284 A 60 60 0 0 1 202 284 A 60 60 0 0 1 101 284 A 60 60 0 0 1 0 284 A 60 60 0 0 1 -101 284 A 60 60 0 0 1 -202 284 A 60 60 0 0 1 -303 284 A 60 60 0 0 1 -404 284 A 60 60 0 0 1 -505 284 A 56 56 0 0 1 -505 189 A 56 56 0 0 1 -505 95 A 56 56 0 0 1 -505 0 A 56 56 0 0 1 -505 -95 A 56 56 0 0 1 -505 -189 A 56 56 0 0 1 -505 -284 Z"></path>
+        </g>
+      </mask>
+    </defs>
+    <g mask="url(#camHoleCurtain)">
+      <g style="transform-box: view-box; transform-origin: 0 0; transform: translateX({{ curtainX }}px); transition: transform .85s cubic-bezier(.6,.02,.3,1);">
+        <rect x="-1930" y="-200" width="1930" height="1480" fill="#EAF5FE"></rect>
+        <g transform="translate(-980 180) scale(1.7)" fill="#FFFFFF" opacity=".55"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g>
+        <g transform="translate(-1180 720) scale(1.5)" fill="#FFFFFF" opacity=".45"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+        <g transform="translate(-150 -10) scale(1.85)" fill="#EAF5FE"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+        <g transform="translate(-260 290) scale(1.55)" fill="#EAF5FE"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g>
+        <g transform="translate(-130 600) scale(1.95)" fill="#EAF5FE"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+        <g transform="translate(-110 880) scale(2.4)" fill="#EAF5FE"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g>
+      </g>
+    </g>
+  </svg>
+
+  <svg viewBox="0 0 1920 1080" style="position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none;">
+    <g transform="translate({{ camX }} {{ camY }})">
+      <g opacity="{{ camPlaceholderOp }}" style="transition: opacity .4s ease;">
+        <path d="M -505 -284 A 60 60 0 0 1 -404 -284 A 60 60 0 0 1 -303 -284 A 60 60 0 0 1 -202 -284 A 60 60 0 0 1 -101 -284 A 60 60 0 0 1 0 -284 A 60 60 0 0 1 101 -284 A 60 60 0 0 1 202 -284 A 60 60 0 0 1 303 -284 A 60 60 0 0 1 404 -284 A 60 60 0 0 1 505 -284 A 56 56 0 0 1 505 -189 A 56 56 0 0 1 505 -95 A 56 56 0 0 1 505 0 A 56 56 0 0 1 505 95 A 56 56 0 0 1 505 189 A 56 56 0 0 1 505 284 A 60 60 0 0 1 404 284 A 60 60 0 0 1 303 284 A 60 60 0 0 1 202 284 A 60 60 0 0 1 101 284 A 60 60 0 0 1 0 284 A 60 60 0 0 1 -101 284 A 60 60 0 0 1 -202 284 A 60 60 0 0 1 -303 284 A 60 60 0 0 1 -404 284 A 60 60 0 0 1 -505 284 A 56 56 0 0 1 -505 189 A 56 56 0 0 1 -505 95 A 56 56 0 0 1 -505 0 A 56 56 0 0 1 -505 -95 A 56 56 0 0 1 -505 -189 A 56 56 0 0 1 -505 -284 Z" fill="#CFE0EE"></path>
+        <text x="0" y="26" text-anchor="middle" style="font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 86px; letter-spacing: 10px; fill: #93AEC6;">CAM</text>
+      </g>
+      <path d="M -505 -284 A 60 60 0 0 1 -404 -284 A 60 60 0 0 1 -303 -284 A 60 60 0 0 1 -202 -284 A 60 60 0 0 1 -101 -284 A 60 60 0 0 1 0 -284 A 60 60 0 0 1 101 -284 A 60 60 0 0 1 202 -284 A 60 60 0 0 1 303 -284 A 60 60 0 0 1 404 -284 A 60 60 0 0 1 505 -284 A 56 56 0 0 1 505 -189 A 56 56 0 0 1 505 -95 A 56 56 0 0 1 505 0 A 56 56 0 0 1 505 95 A 56 56 0 0 1 505 189 A 56 56 0 0 1 505 284 A 60 60 0 0 1 404 284 A 60 60 0 0 1 303 284 A 60 60 0 0 1 202 284 A 60 60 0 0 1 101 284 A 60 60 0 0 1 0 284 A 60 60 0 0 1 -101 284 A 60 60 0 0 1 -202 284 A 60 60 0 0 1 -303 284 A 60 60 0 0 1 -404 284 A 60 60 0 0 1 -505 284 A 56 56 0 0 1 -505 189 A 56 56 0 0 1 -505 95 A 56 56 0 0 1 -505 0 A 56 56 0 0 1 -505 -95 A 56 56 0 0 1 -505 -189 A 56 56 0 0 1 -505 -284 Z" fill="none" stroke="#B7D8F0" stroke-width="26" stroke-linejoin="round"></path>
+      <path d="M -505 -284 A 60 60 0 0 1 -404 -284 A 60 60 0 0 1 -303 -284 A 60 60 0 0 1 -202 -284 A 60 60 0 0 1 -101 -284 A 60 60 0 0 1 0 -284 A 60 60 0 0 1 101 -284 A 60 60 0 0 1 202 -284 A 60 60 0 0 1 303 -284 A 60 60 0 0 1 404 -284 A 60 60 0 0 1 505 -284 A 56 56 0 0 1 505 -189 A 56 56 0 0 1 505 -95 A 56 56 0 0 1 505 0 A 56 56 0 0 1 505 95 A 56 56 0 0 1 505 189 A 56 56 0 0 1 505 284 A 60 60 0 0 1 404 284 A 60 60 0 0 1 303 284 A 60 60 0 0 1 202 284 A 60 60 0 0 1 101 284 A 60 60 0 0 1 0 284 A 60 60 0 0 1 -101 284 A 60 60 0 0 1 -202 284 A 60 60 0 0 1 -303 284 A 60 60 0 0 1 -404 284 A 60 60 0 0 1 -505 284 A 56 56 0 0 1 -505 189 A 56 56 0 0 1 -505 95 A 56 56 0 0 1 -505 0 A 56 56 0 0 1 -505 -95 A 56 56 0 0 1 -505 -189 A 56 56 0 0 1 -505 -284 Z" fill="none" stroke="#FFFFFF" stroke-width="16" stroke-linejoin="round"></path>
+    </g>
+  </svg>
+
+  <sc-if value="{{ dev }}">
+    <div style="position: absolute; left: 24px; bottom: 24px; display: flex; flex-direction: column; gap: 8px; background: rgba(30,52,74,.9); border-radius: 18px; padding: 13px 15px; font-family: Nunito, sans-serif; color: #EAF5FE;">
+      <div style="font-weight: 900; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; opacity: .72;">Régie · {{ sceneLabel }}</div>
+      <div style="display: flex; gap: 6px;">
+        <sc-for list="{{ scenes }}" as="s" hint-placeholder-count="9">
+          <div onClick="{{ s.go }}" style="cursor: pointer; width: 38px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: {{ s.bg }}; color: {{ s.fg }}; font-weight: 900; font-size: 14px;">{{ s.id }}</div>
+        </sc-for>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <div onClick="{{ nextCrit }}" style="cursor: pointer; padding: 7px 13px; border-radius: 10px; background: rgba(245,142,186,.32); font-weight: 800; font-size: 13px;">Critère suivant ⏎</div>
+        <div onClick="{{ restart }}" style="cursor: pointer; padding: 7px 13px; border-radius: 10px; background: rgba(255,255,255,.13); font-weight: 800; font-size: 13px;">Rejouer</div>
+        <div onClick="{{ hideDev }}" style="cursor: pointer; padding: 7px 13px; border-radius: 10px; background: rgba(255,255,255,.13); font-weight: 800; font-size: 13px;">Masquer (H)</div>
+      </div>
+      <div style="font-size: 12px; opacity: .66; max-width: 320px; line-height: 1.4;">0–9 : Amina valide sa note · A = 10 · ⏎ : critère suivant · ← → : séquence · H : masquer</div>
+    </div>
+  </sc-if>
+
+</div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1920, &quot;height&quot;: 1080}, &quot;camSide&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;gauche&quot;, &quot;droite&quot;], &quot;default&quot;: &quot;gauche&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Scène&quot;}, &quot;camPlaceholder&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Scène&quot;}, &quot;autoAdvance&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Scène&quot;}, &quot;weekLabel&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Semaine du 24 → 30 juillet&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Contenu&quot;}, &quot;aminaName&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Amina&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Contenu&quot;}, &quot;voterCount&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 100, &quot;min&quot;: 5, &quot;max&quot;: 300, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Données&quot;}, &quot;speed&quot;: {&quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 1, &quot;min&quot;: 0.5, &quot;max&quot;: 2, &quot;step&quot;: 0.1, &quot;unit&quot;: &quot;×&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Motion&quot;}, &quot;showDev&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Prototype&quot;}}">
+const NOTE_COLORS = ['#7E9BC4', '#9A93CE', '#F09BC0', '#EF5F94', '#DC9F2E'];
+const CRIT = [
+  { n: 'Sommeil', t: '#DCD1F7', e: '#C3B2EE', mw: 15, mh: 15, mr: '50%', mrot: 0, base: 4.2 },
+  { n: 'Vie sociale', t: '#FFD2E3', e: '#F9B4CD', mw: 19, mh: 8, mr: '999px', mrot: -18, base: 7.6 },
+  { n: 'Motivation', t: '#FFDCC2', e: '#F7C09B', mw: 14, mh: 14, mr: '4px', mrot: 45, base: 6.1 },
+  { n: 'Alimentation', t: '#CFEBDE', e: '#A9D8C3', mw: 17, mh: 11, mr: '999px 999px 5px 5px', mrot: 0, base: 5.4 },
+  { n: 'Sport', t: '#CFE0FA', e: '#A9C4EE', mw: 8, mh: 17, mr: '999px', mrot: 0, base: 3.3 },
+  { n: 'Charge mentale', t: '#E4D6FA', e: '#C9B4EE', mw: 13, mh: 13, mr: '4px 12px 4px 12px', mrot: 0, base: 5.8 },
+  { n: 'Petits plaisirs', t: '#FFD9E9', e: '#F9BAD3', mw: 18, mh: 9, mr: '999px', mrot: 0, base: 8.3 },
+  { n: 'Semaine globale', t: '#FBE3B9', e: '#F0CB86', mw: 15, mh: 15, mr: '5px 15px 5px 15px', mrot: 45, base: 6.7 }
+];
+const AMINA_NOTES = [4, 8, 6, 5, 3, 6, 9, 7];
+const NAME_A = ['pixie', 'moon', 'choco', 'sakura', 'nova', 'kiwi', 'lulu', 'mochi', 'zephyr', 'plume', 'bubble', 'cosmo', 'yuki', 'praline', 'tofu', 'velvet', 'gaufre', 'nimbus', 'kokoro', 'ambre'];
+const NAME_B = ['_gaming', 'chan', 'ette', '_ttv', '77', 'boo', '_uwu', 'zinho', '_off', 'ita', 'san', '_x', '2000', 'ky', '_live'];
+const SCENE_LABELS = { s1: 'S1 · Générique', s2: 'S2 · Tableau', s3: 'S3 · Critère en cours', s4: 'S4 · Amina valide', s5: 'S5 · Calcul', s6: 'S6 · Meilleure semaine', s7: 'S7 · Pire semaine', s8: 'S8 · Classement', s9: 'S9 · Sortie' };
+const COL_LEFT = 1124;
+const COL_W = 756;
+const CAM_X = 568;
+const CAM_Y = 436;
+const CURTAIN_OFF = -420;
+const CURTAIN_COVER = 1930;
+const CURTAIN_EXIT = 3920;
+const newRow = () => ({ votes: [], sum: 0, avg: 0, disp: 0, amina: null, landed: 0, locked: false, state: 'upcoming', verdict: '', pulse: 1, entered: false });
+
+class Component extends DCLogic {
+  state = { v: 0, dev: true, fit: 1 };
+
+  constructor(props) {
+    super(props);
+    this.timers = [];
+    this.scene = 's1';
+    this.mode = 'intro';
+    this.active = -1;
+    this.curtain = CURTAIN_OFF;
+    this.calcPct = 0;
+    this.calcScramble = '0.0';
+    this.calcIn = false;
+    this.showGlobal = false;
+    this.hof = null;
+    this.hofStage = 0;
+    this.showRank = false;
+    this.rankIn = false;
+    this.scrollY = 0;
+    this.scrollDur = 0;
+    this.hintIn = false;
+    this.panelOut = false;
+    this.rows = CRIT.map(newRow);
+  }
+
+  componentDidMount() {
+    this.buildViewers();
+    this.fit();
+    window.addEventListener('resize', this.fit);
+    window.addEventListener('keydown', this.onKey);
+    this.tick = setInterval(this.onTick, 60);
+    this.go('s1');
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.fit);
+    window.removeEventListener('keydown', this.onKey);
+    clearInterval(this.tick);
+    clearInterval(this.voteInt);
+    this.clear();
+  }
+
+  fit = () => {
+    const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    this.setState({ fit: Math.max(0.1, s) });
+  };
+
+  clear() { this.timers.forEach(clearTimeout); this.timers = []; }
+  after(ms, fn) { const id = setTimeout(fn, ms / this.speed()); this.timers.push(id); return id; }
+  speed() { return this.props.speed || 1; }
+  auto() { return this.props.autoAdvance === true; }
+  paint() { this.setState((s) => ({ v: s.v + 1 })); }
+  mirrored() { return (this.props.camSide || 'gauche') === 'droite'; }
+
+  buildViewers() {
+    const n = Math.max(5, Math.min(300, this.props.voterCount || 100));
+    const used = {};
+    const list = [];
+    for (let i = 0; i < n; i++) {
+      let name;
+      do {
+        name = NAME_A[Math.floor(Math.random() * NAME_A.length)] + NAME_B[Math.floor(Math.random() * NAME_B.length)];
+        if (Math.random() < 0.25) name += Math.floor(Math.random() * 90 + 10);
+      } while (used[name]);
+      used[name] = 1;
+      list.push({ name, avg: Math.round((2.4 + Math.random() * 6.4) * 10) / 10 });
+    }
+    list.sort((a, b) => b.avg - a.avg);
+    if (list.length > 1) list[1].avg = list[0].avg;
+    if (list.length > 2 && list[2].avg >= list[0].avg) list[2].avg = Math.round((list[0].avg - 0.2) * 10) / 10;
+    list.sort((a, b) => b.avg - a.avg);
+    let rank = 1;
+    list.forEach((v, i) => { if (i > 0 && v.avg < list[i - 1].avg) rank = i + 1; v.rank = rank; });
+    this.viewers = list;
+  }
+
+  onTick = () => {
+    let dirty = false;
+    this.rows.forEach((r) => {
+      const t = r.state === 'upcoming' ? 0 : r.avg;
+      if (Math.abs(r.disp - t) > 0.004) { r.disp += (t - r.disp) * 0.22; dirty = true; }
+      if (r.pulse !== 1) { r.pulse = 1; dirty = true; }
+    });
+    if (this.calcRun) {
+      const p = Math.min(1, (Date.now() - this.calcStart) / (9000 / this.speed()));
+      this.calcPct = p * 100;
+      this.calcScramble = p < 0.94 ? (Math.random() * 10).toFixed(1) : this.globalChat();
+      dirty = true;
+      if (p >= 1) this.calcRun = false;
+    }
+    if (dirty) this.paint();
+  };
+
+  onKey = (e) => {
+    const k = e.key.toLowerCase();
+    if (k === 'h') { this.setState((s) => ({ dev: !s.dev })); return; }
+    if (k === 'arrowright') { e.preventDefault(); this.nextScene(); return; }
+    if (k === 'arrowleft') { e.preventDefault(); this.prevScene(); return; }
+    if (k === 'enter') { e.preventDefault(); this.nextCrit(); return; }
+    if (this.scene === 's3' && this.active >= 0) {
+      if (k === 'a') { this.validate(10); return; }
+      if (k >= '0' && k <= '9') this.validate(parseInt(k, 10));
+    }
+  };
+
+  restart = () => { this.buildViewers(); this.rows = CRIT.map(newRow); this.go('s1'); };
+  hideDev = () => this.setState({ dev: false });
+
+  nextCrit = () => {
+    if (this.scene !== 's3' && this.scene !== 's4') return;
+    const i = this.active;
+    const row = this.rows[i];
+    if (this.scene === 's3' && row && row.amina == null) { this.validate(AMINA_NOTES[i]); return; }
+    this.clear();
+    if (row) row.state = 'done';
+    if (i + 1 < this.rows.length) this.go('s3', i + 1);
+    else this.go('s5');
+  };
+
+  order() { return ['s1', 's2', 's3', 's5', 's6', 's7', 's8', 's9']; }
+  nextScene() { const o = this.order(); const i = o.indexOf(this.scene === 's4' ? 's3' : this.scene); this.go(o[Math.min(o.length - 1, i + 1)]); }
+  prevScene() { const o = this.order(); const i = o.indexOf(this.scene === 's4' ? 's3' : this.scene); this.go(o[Math.max(0, i - 1)]); }
+
+  sweep(onCovered) {
+    this.curtain = CURTAIN_COVER;
+    this.paint();
+    this.after(900, () => {
+      onCovered && onCovered();
+      this.paint();
+      this.after(320, () => {
+        this.curtain = CURTAIN_EXIT;
+        this.paint();
+        this.after(950, () => { this.curtain = CURTAIN_OFF; this.paint(); });
+      });
+    });
+  }
+
+  go(scene, arg) {
+    this.clear();
+    clearInterval(this.voteInt);
+    this.voteInt = null;
+    this.calcRun = false;
+    this.scene = scene;
+    if (scene !== 's3' && scene !== 's4') this.active = -1;
+    if (scene === 's5' || scene === 's6' || scene === 's7' || scene === 's8' || scene === 's9') this.fillAll();
+
+    if (scene === 's1') {
+      this.mode = 'intro'; this.panelOut = false; this.hof = null; this.showRank = false; this.showGlobal = false; this.hintIn = false; this.calcIn = false; this.calcPct = 0;
+      this.rows = CRIT.map(newRow);
+      this.curtain = CURTAIN_OFF;
+      this.after(3200, () => this.go('s2'));
+    } else if (scene === 's2') {
+      this.mode = 'table'; this.panelOut = false; this.hof = null; this.showRank = false; this.showGlobal = false; this.calcIn = false; this.calcPct = 0;
+      this.rows.forEach((r) => { r.state = 'upcoming'; r.entered = false; });
+      this.rows.forEach((r, i) => this.after(420 + i * 78, () => { r.entered = true; this.paint(); }));
+      this.after(1100, () => { this.hintIn = true; this.paint(); });
+      this.after(1700, () => this.go('s3', 0));
+    } else if (scene === 's3') {
+      this.mode = 'table'; this.panelOut = false; this.hof = null; this.showRank = false; this.showGlobal = false; this.hintIn = true; this.calcIn = false; this.calcPct = 0;
+      const i = arg == null ? 0 : arg;
+      this.active = i;
+      this.rows.forEach((r, k) => { r.entered = true; r.state = k < i ? (r.amina != null ? 'done' : 'upcoming') : k === i ? 'active' : 'upcoming'; });
+      const row = this.rows[i];
+      if (row && row.amina == null) {
+        const delay = i === 4 ? 2400 : 280;
+        this.after(delay, () => { this.voteInt = setInterval(() => this.incomingVotes(i), 170 / this.speed()); });
+        if (this.auto()) this.after(5000 + Math.random() * 1500, () => { if (this.scene === 's3' && this.active === i) this.validate(AMINA_NOTES[i]); });
+      }
+    } else if (scene === 's5') {
+      this.mode = 'table'; this.panelOut = false; this.hof = null; this.showRank = false; this.showGlobal = false;
+      this.rows.forEach((r) => { r.state = 'done'; r.entered = true; });
+      this.hintIn = false;
+      this.after(450, () => { this.calcIn = true; this.calcRun = true; this.calcStart = Date.now(); this.paint(); });
+      this.after(9800, () => { this.calcRun = false; this.calcPct = 100; this.showGlobal = true; this.paint(); });
+      this.after(11200, () => { this.calcIn = false; this.paint(); });
+      this.after(13400, () => this.go('s6'));
+    } else if (scene === 's6') {
+      this.hintIn = false; this.calcIn = false; this.showRank = false; this.showGlobal = true;
+      this.sweep(() => { this.panelOut = true; this.hof = 'best'; this.hofStage = 0; });
+      this.after(1150, () => { this.hofStage = 1; this.paint(); });
+      this.after(1900, () => { this.hofStage = 2; this.paint(); });
+      this.after(2750, () => { this.hofStage = 3; this.paint(); });
+      this.after(8400, () => this.go('s7'));
+    } else if (scene === 's7') {
+      this.panelOut = true; this.showRank = false; this.hintIn = false; this.calcIn = false;
+      this.hof = 'worst'; this.hofStage = 1;
+      this.after(600, () => { this.hofStage = 2; this.paint(); });
+      this.after(1400, () => { this.hofStage = 3; this.paint(); });
+      this.after(7600, () => this.go('s8'));
+    } else if (scene === 's8') {
+      this.hintIn = false; this.calcIn = false;
+      this.sweep(() => { this.panelOut = true; this.hof = null; this.showRank = true; this.rankIn = false; this.scrollY = 0; this.scrollDur = 0; });
+      this.after(1250, () => { this.rankIn = true; this.paint(); });
+      this.after(2850, () => {
+        const rows = Math.max(0, this.viewers.length - 3);
+        const overflow = Math.max(0, rows * 47 - 500);
+        this.scrollDur = overflow > 0 ? overflow / 30 : 0.001;
+        this.scrollY = -overflow;
+        this.paint();
+        this.after(this.scrollDur * 1000 + 2400, () => this.go('s9'));
+      });
+    } else if (scene === 's9') {
+      this.hintIn = false; this.calcIn = false;
+      this.after(200, () => { this.panelOut = true; this.rankIn = false; this.hofStage = 0; this.paint(); });
+      this.sweep(() => { this.panelOut = true; this.hof = null; this.showRank = false; });
+      this.after(2900, () => this.restart());
+    }
+    this.paint();
+  }
+
+  fillAll() {
+    this.rows.forEach((r, i) => {
+      r.entered = true;
+      if (r.amina != null) return;
+      const n = 40 + Math.floor(Math.random() * 50);
+      r.votes = Array.from({ length: n }, () => Math.max(0, Math.min(10, Math.round(CRIT[i].base + (Math.random() - 0.5) * 5.4))));
+      r.sum = r.votes.reduce((a, b) => a + b, 0);
+      r.avg = r.sum / n;
+      r.disp = r.avg;
+      r.amina = AMINA_NOTES[i];
+      r.locked = true;
+      r.state = 'done';
+    });
+  }
+
+  incomingVotes(i) {
+    const row = this.rows[i];
+    if (!row || row.state !== 'active' || row.locked) return;
+    const total = this.viewers.length;
+    const batch = 1 + Math.floor(Math.random() * 3);
+    for (let b = 0; b < batch; b++) {
+      const v = Math.max(0, Math.min(10, Math.round(CRIT[i].base + (Math.random() - 0.5) * 5.4)));
+      if (row.votes.length >= total) {
+        const k = Math.floor(Math.random() * row.votes.length);
+        row.sum += v - row.votes[k];
+        row.votes[k] = v;
+      } else {
+        row.votes.push(v);
+        row.sum += v;
+      }
+    }
+    row.avg = row.sum / row.votes.length;
+    row.pulse = 1.07;
+    this.paint();
+  }
+
+  validate(note) {
+    const i = this.active;
+    const row = this.rows[i];
+    if (!row || row.amina != null) return;
+    this.clear();
+    clearInterval(this.voteInt);
+    this.voteInt = null;
+    this.scene = 's4';
+    row.amina = note;
+    row.landed = Date.now();
+    row.locked = true;
+    const gap = Math.abs(note - row.avg);
+    if (row.votes.length === 0) row.verdict = 'le chat n\u2019a pas voté';
+    else if (gap < 0.35) row.verdict = 'même avis !';
+    else if (gap >= 2.6) row.verdict = 'gros écart';
+    else row.verdict = '';
+    this.paint();
+    if (this.auto()) this.after(1500, () => this.nextCrit());
+    else this.after(1200, () => { row.state = 'done'; this.paint(); });
+  }
+
+  globalAmina() {
+    const v = this.rows.filter((r) => r.amina != null);
+    if (!v.length) return '—';
+    return (v.reduce((a, r) => a + r.amina, 0) / v.length).toFixed(1);
+  }
+  globalChat() {
+    const v = this.rows.filter((r) => r.votes.length);
+    if (!v.length) return '—';
+    return (v.reduce((a, r) => a + r.avg, 0) / v.length).toFixed(1);
+  }
+  noteColor(v) {
+    if (v < 2.5) return NOTE_COLORS[0];
+    if (v < 4.5) return NOTE_COLORS[1];
+    if (v < 6.5) return NOTE_COLORS[2];
+    if (v < 8.5) return NOTE_COLORS[3];
+    return NOTE_COLORS[4];
+  }
+  trunc(s, n) { return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+
+  renderVals() {
+    const intro = this.mode === 'intro';
+    const now = Date.now();
+    const mir = this.mirrored();
+    const colLeft = mir ? 1920 - COL_LEFT - COL_W : COL_LEFT;
+    const camX = mir ? 1920 - CAM_X : CAM_X;
+    const stripW = 1000;
+    const stripLeft = camX - stripW / 2;
+
+    const rows = this.rows.map((r, i) => {
+      const st = r.state;
+      const aVal = r.amina;
+      const up = st === 'upcoming';
+      const active = st === 'active';
+      const justLanded = r.landed && now - r.landed < 720;
+      const cShown = up ? 0 : r.disp;
+      const hasVotes = r.votes.length > 0;
+      return {
+        name: CRIT[i].n,
+        labelColor: up ? '#63505C' : '#3D1730',
+        gaugeOp: up ? 0.42 : 1,
+        tint: CRIT[i].t, tintEdge: CRIT[i].e,
+        mw: CRIT[i].mw, mh: CRIT[i].mh, mr: CRIT[i].mr, mrot: CRIT[i].mrot,
+        h: active ? 84 : 74,
+        padX: 13,
+        bg: active ? '#FFFFFF' : st === 'done' ? '#FFF9FB' : '#FFFCFD',
+        border: active ? '3px solid #F58EBA' : '2px solid #EFD3E4',
+        op: r.entered ? 1 : 0,
+        ty: r.entered ? 0 : 18,
+        tx: active ? -10 : 0,
+        delay: r.entered ? 0 : i * 70,
+        shadow: active ? '0 12px 26px -18px rgba(233,84,143,.8)' : 'none',
+        anim: active ? 'breathe 4.6s ease-in-out infinite' : 'none',
+        aText: aVal == null || up ? (active ? '·' : '–') : String(aVal),
+        aColor: aVal == null || up ? '#D3AEC1' : '#E8548F',
+        aPct: aVal == null || up ? 0 : aVal * 10,
+        aWaiting: active && aVal == null,
+        aAnim: justLanded ? 'stampIn .55s cubic-bezier(.2,1.3,.4,1) both' : 'none',
+        aShock: justLanded,
+        cText: up ? '–' : !hasVotes ? '·' : cShown.toFixed(1),
+        cColor: !hasVotes || up ? '#A2B4CE' : this.noteColor(cShown),
+        cPct: cShown * 10,
+        cFill: this.noteColor(cShown),
+        votesText: hasVotes ? String(r.votes.length) : '0',
+        dotColor: active && hasVotes ? '#E8548F' : '#DFBACE',
+        votesOp: up ? 0 : 1,
+        pulse: r.pulse,
+        verdict: r.verdict,
+        hasVerdict: !!r.verdict && !up,
+        verdictColor: r.verdict === 'même avis !' ? '#2F7A5E' : '#A8386A',
+        verdictBg: r.verdict === 'même avis !' ? '#DDF2E9' : '#FFEAF2'
+      };
+    });
+
+    const vw = this.viewers || [];
+    const best = vw.length ? vw.filter((v) => v.avg === vw[0].avg) : [];
+    const worst = vw.length ? [vw[vw.length - 1]] : [];
+    const hofBest = this.hof === 'best';
+    const winners = hofBest ? best : worst;
+    const names = winners.slice(0, 3).map((v) => ({ label: this.trunc(v.name, 15) }));
+    const hofScore = winners[0] ? winners[0].avg.toFixed(1) : '—';
+
+    const podium = vw.slice(0, 3).map((v, i) => ({
+      rank: String(v.rank),
+      name: this.trunc(v.name, 11),
+      avg: v.avg.toFixed(1),
+      bg: i === 0 ? '#FFFAEE' : '#FFFDFB',
+      border: i === 0 ? '#EFC97F' : '#EFD3E4',
+      badgeBg: i === 0 ? '#FBE3B9' : i === 1 ? '#FFD2E3' : '#DCD1F7',
+      badgeBorder: i === 0 ? '#E5B863' : i === 1 ? '#F7B4CD' : '#C3B2EE',
+      badgeFg: i === 0 ? '#8A5A12' : i === 1 ? '#A8386A' : '#5B4A9B',
+      lift: i === 0 ? -10 : 0,
+      scoreColor: i === 0 ? '#C9911F' : this.noteColor(v.avg)
+    }));
+    const rest = vw.slice(3).map((v, i) => ({
+      rank: '#' + v.rank, name: this.trunc(v.name, 20), avg: v.avg.toFixed(1),
+      pct: v.avg * 10, color: this.noteColor(v.avg), bg: i % 2 ? '#FFF9FB' : '#FFFDFB'
+    }));
+
+    const st = this.hofStage;
+    const scenes = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9'].map((id) => ({
+      id: id.toUpperCase(),
+      bg: this.scene === id ? '#F58EBA' : 'rgba(255,255,255,.13)',
+      fg: this.scene === id ? '#2A3F58' : '#EAF5FE',
+      go: () => this.go(id === 's4' ? 's3' : id)
+    }));
+
+    return {
+      fit: this.state.fit,
+      week: this.props.weekLabel || 'Semaine du 24 → 30 juillet',
+      amina: this.props.aminaName || 'Amina',
+      rows,
+      colLeft, colW: COL_W, stripLeft, stripW,
+      camX, camY: CAM_Y,
+      camPlaceholderOp: this.props.camPlaceholder === false ? 0 : 1,
+      moodFill: this.hof === 'worst' ? '#6E86A8' : this.hof === 'best' ? '#FFD98A' : '#FFFFFF',
+      moodOp: this.hof === 'worst' ? 0.42 : this.hof === 'best' ? 0.22 : 0,
+      panelTop: intro ? 336 : 56,
+      panelPad: intro ? 38 : 22,
+      titleFs: intro ? 68 : 34,
+      dateFs: intro ? 26 : 16,
+      datePadY: intro ? 8 : 4,
+      datePadX: intro ? 22 : 13,
+      headGap: intro ? 20 : 10,
+      colHeadOp: intro ? 0 : 1,
+      colGap: 12,
+      colFs: 14,
+      gaugeW: 118,
+      rowGap: 8,
+      listTop: 14,
+      showTable: !intro,
+      panelOp: this.panelOut ? 0 : 1,
+      panelY: this.panelOut ? 22 : 0,
+      showGlobal: this.showGlobal && !intro && !this.panelOut,
+      globalA: this.globalAmina(),
+      globalC: this.globalChat(),
+      calcOp: this.calcIn ? 1 : 0,
+      calcY: this.calcIn ? 0 : 26,
+      calcPct: this.calcPct,
+      calcScramble: this.calcScramble,
+      showHof: !!this.hof,
+      hofOp: st > 0 ? 1 : 0,
+      hofY: st > 0 ? 0 : 30,
+      hofTitle: hofBest ? 'Meilleure semaine' : 'Pire semaine',
+      hofSub: hofBest ? 'Celui qui a kiffé sa semaine' : 'Celui qui a passé une semaine de merde',
+      hofFoot: names.length > 1 ? 'ex æquo · moyenne sur 8 critères' : hofBest ? 'moyenne sur 8 critères' : 'on t’envoie du courage',
+      hofNames: names,
+      hofNameFs: names.length > 1 ? 30 : 38,
+      hofScore,
+      hofBg: hofBest ? '#FFFDFB' : '#F5F9FF',
+      hofBorder: hofBest ? '#EFC97F' : '#BFD5EE',
+      hofChipBg: hofBest ? '#FBE3B9' : '#DCE7F5',
+      hofChipBorder: hofBest ? '#E5B863' : '#B4C9E2',
+      hofChipFg: hofBest ? '#8A5A12' : '#42607F',
+      hofTitleColor: hofBest ? '#A8386A' : '#3F5D7C',
+      hofSubColor: hofBest ? '#B4658C' : '#6B85A5',
+      hofPseudoBg: hofBest ? '#FFF6E6' : '#E9F0F9',
+      hofPseudoBorder: hofBest ? '#EFC97F' : '#BFD5EE',
+      hofNameColor: hofBest ? '#8A5A12' : '#3F5D7C',
+      hofScoreColor: hofBest ? '#DC9F2E' : '#89A3C1',
+      st1: st >= 1 ? 1 : 0, st1y: st >= 1 ? 0 : 18,
+      st2: st >= 2 ? 1 : 0, st2y: st >= 2 ? 0 : 14,
+      st3: st >= 3 ? 1 : 0, st3s: st >= 3 ? 1 : 0.7,
+      raysOp: hofBest && st >= 1 ? 1 : 0,
+      rainOp: !hofBest && this.hof ? 1 : 0,
+      confettiOp: hofBest && st >= 3 ? 1 : 0,
+      sparkOp: hofBest && st >= 2 ? 0.9 : 0,
+      rays: Array.from({ length: 8 }, (_, i) => ({ rot: i * 45 + 12 })),
+      drops: Array.from({ length: 12 }, (_, i) => ({ left: 58 + (i * 18) % 180, dur: 1.7 + (i % 4) * 0.3, delay: (i * 0.26).toFixed(2) })),
+      confetti: Array.from({ length: 16 }, (_, i) => ({
+        left: 3 + (i * 6.3) % 94, w: 8 + (i % 3) * 3, h: 8 + (i % 2) * 5,
+        r: i % 3 === 0 ? '50%' : '3px', color: ['#FFD2E3', '#FBE3B9', '#DCD1F7', '#FFDCC2'][i % 4],
+        dur: 3.6 + (i % 5) * 0.5, delay: ((i * 0.31) % 3.8).toFixed(2)
+      })),
+      sparks: Array.from({ length: 6 }, (_, i) => ({
+        left: [2, 96, 6, 93, 1, 98][i], top: [16, 24, 74, 66, 44, 88][i],
+        size: 7 + (i % 3) * 3, color: i % 2 ? '#FFE29A' : '#FFFFFF', dur: 2.6 + (i % 3) * 0.7, delay: (i * 0.37).toFixed(2)
+      })),
+      showRank: this.showRank,
+      rankOp: this.rankIn ? 1 : 0,
+      rankY: this.rankIn ? 0 : 26,
+      rankCountLabel: vw.length + ' viewers ont noté leur semaine',
+      podium, rest,
+      scrollY: this.scrollY, scrollDur: this.scrollDur,
+      hintOp: this.hintIn ? 1 : 0,
+      hintY: this.hintIn ? 0 : 26,
+      curtainX: this.curtain,
+      dev: this.state.dev && this.props.showDev !== false,
+      sceneLabel: SCENE_LABELS[this.scene] || '',
+      scenes,
+      nextCrit: this.nextCrit,
+      restart: this.restart,
+      hideDev: this.hideDev
+    };
+  }
+}
+
+</script>
+</body>
+</html>

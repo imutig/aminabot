@@ -1,0 +1,381 @@
+/* ============================================================
+   Les 10 ecrans. Geometrie en coordonnees canvas (px absolus).
+   ============================================================ */
+
+.ecran { position: absolute; inset: 0; }
+
+/* ---------------- E1 · Titre & E10 · Merci ---------------- */
+
+.damier {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 172px;
+  border-top: 8px solid var(--noir);
+  background-image: conic-gradient(var(--rose-vif) 25%, var(--creme) 0 50%, var(--rose-vif) 0 75%, var(--creme) 0);
+  background-size: 160px 160px;
+  animation: damierFile 14s linear infinite;
+}
+@keyframes damierFile { from { background-position: 0 0; } to { background-position: -160px 0; } }
+
+.borne {
+  position: absolute; top: 160px; width: 400px; height: 800px;
+  background: var(--rose-borne);
+  border: 8px solid var(--noir); border-radius: 34px;
+}
+.borne.g { left: -40px; }
+.borne.d { right: -40px; }
+.borne-aff {
+  position: absolute; left: 40px; right: 40px; top: 34px; height: 96px;
+  background: var(--creme); border: 6px solid var(--noir); border-radius: 999px;
+  display: grid; place-items: center;
+  font-family: var(--display); font-weight: 900; font-size: 62px; color: var(--rose-vif);
+  letter-spacing: 6px;
+  animation: segFlick 8s ease-in-out infinite;
+}
+@keyframes segFlick { 0%, 92%, 100% { opacity: 1; } 94% { opacity: .55; } 96% { opacity: 1; } }
+.borne-ecran {
+  position: absolute; left: 40px; right: 40px; top: 156px; height: 300px;
+  background: var(--creme); border: 6px solid var(--noir); border-radius: 22px;
+  display: flex; align-items: flex-end; gap: 16px; padding: 20px;
+}
+.borne-px { flex: 1; background: var(--rose-vif); border: 4px solid var(--noir); border-radius: 8px; animation: pxMonte 4.4s ease-in-out infinite; }
+.borne-px:nth-child(1) { height: 40%; animation-duration: 3.4s; }
+.borne-px:nth-child(2) { height: 70%; animation-duration: 5.1s; }
+.borne-px:nth-child(3) { height: 55%; animation-duration: 4.2s; }
+.borne-px:nth-child(4) { height: 85%; animation-duration: 6.5s; }
+@keyframes pxMonte { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.borne-joy { position: absolute; left: 96px; bottom: 190px; width: 90px; height: 90px; background: var(--creme); border: 6px solid var(--noir); border-radius: 50%; }
+.borne-joy::after { content: ''; position: absolute; left: 50%; bottom: 40px; width: 12px; height: 70px; margin-left: -6px; background: var(--noir); }
+.borne-joy::before { content: ''; position: absolute; left: 50%; bottom: 100px; width: 46px; height: 46px; margin-left: -23px; background: var(--jaune); border: 6px solid var(--noir); border-radius: 50%; }
+.borne-btn { position: absolute; bottom: 200px; width: 76px; height: 52px; background: var(--vert-pale); border: 6px solid var(--noir); border-radius: 999px; animation: clignote 5.4s ease-in-out infinite; }
+.borne-btn.b1 { right: 130px; }
+.borne-btn.b2 { right: 40px; animation-duration: 7.7s; }
+@keyframes clignote { 0%, 88%, 100% { background: var(--vert-pale); } 92% { background: var(--jaune); } }
+
+.titre-display {
+  position: absolute; left: 0; right: 0; text-align: center;
+  font-family: var(--display); font-weight: 900; line-height: .92;
+  color: var(--blanc-rose);
+  text-shadow:
+    -4px -4px 0 var(--noir), 4px -4px 0 var(--noir),
+    -4px 4px 0 var(--noir), 4px 4px 0 var(--noir),
+    0 -5px 0 var(--noir), 0 5px 0 var(--noir),
+    -5px 0 0 var(--noir), 5px 0 0 var(--noir),
+    12px 14px 0 var(--rose-vif), 17px 19px 0 var(--noir);
+  animation: titreFlotte 9s ease-in-out infinite;
+}
+@keyframes titreFlotte {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-6px) scale(1.012); }
+}
+
+.e1-titre { top: 170px; font-size: 170px; }
+.e1-boutons { position: absolute; left: 0; right: 0; top: 640px; display: flex; flex-direction: column; align-items: center; gap: 26px; }
+.e1-btn {
+  width: 560px; height: 104px;
+  border: 8px solid var(--noir); border-radius: 999px;
+  font-family: var(--titre); font-weight: 600; font-size: 46px;
+  cursor: pointer; box-shadow: 0 8px 0 var(--noir);
+  transition: transform .13s ease, box-shadow .13s ease;
+}
+.e1-btn.solo { background: var(--cyan); }
+.e1-btn.famille { background: var(--orange); }
+body.regie .e1-btn:hover { transform: translateY(-3px); box-shadow: 0 11px 0 var(--noir); }
+body:not(.regie) .e1-btn { cursor: default; }
+
+.e10-titre { top: 330px; font-size: 230px; color: var(--violet); }
+.cerise { position: absolute; width: 400px; height: 800px; top: 160px; }
+
+/* ---------------- E2 / E3 · Lobby ---------------- */
+
+.lobby-consigne {
+  position: absolute; left: 60px; right: 60px; top: 44px;
+  text-align: center;
+  font-family: var(--titre); font-weight: 600; font-size: 52px;
+}
+.lobby-grille {
+  position: absolute; left: 60px; right: 520px; top: 170px; bottom: 40px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 26px;
+  align-content: start;
+}
+.lobby-grille .pseudo { height: 78px; }
+.lobby-vide { position: absolute; inset: 170px 520px 40px 60px; display: grid; place-items: center; gap: 24px; }
+.lobby-vide .etoile { position: static; width: 150px; height: 150px; background: var(--rose-clair); }
+.lobby-vide-txt { font-family: var(--titre); font-weight: 600; font-size: 38px; color: var(--gris-terne); }
+.lobby-plus {
+  position: absolute; left: 60px; bottom: 40px;
+  background: var(--jaune); border: 5px solid var(--noir); border-radius: 999px;
+  padding: 8px 26px; font-family: var(--texte); font-weight: 900; font-size: 26px;
+}
+
+/* ---------------- E4 / E8 · Colonnes d'equipes ---------------- */
+
+.equipes { position: absolute; inset: 40px; display: flex; gap: 26px; }
+.equipe {
+  flex: 1; min-width: 0;
+  border: 7px solid var(--noir); border-radius: 28px;
+  padding: 22px 18px;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  animation: equipeEntre .5s cubic-bezier(.2,.9,.3,1.06) both;
+}
+@keyframes equipeEntre { from { opacity: 0; transform: translateY(38px); } to { opacity: 1; transform: translateY(0); } }
+.equipe-nom {
+  background: var(--creme); border: 6px solid var(--noir); border-radius: 999px;
+  padding: 6px 28px; font-family: var(--titre); font-weight: 600; font-size: 36px;
+}
+.equipe .pseudo { height: 62px; font-size: 26px; width: 100%; justify-content: center; }
+.equipe-pts {
+  width: 172px; height: 172px; border-radius: 50%;
+  background: var(--jaune); border: 8px solid var(--noir);
+  display: grid; place-items: center; box-shadow: 0 8px 0 var(--noir);
+  font-family: var(--texte); font-weight: 900; font-size: 54px; font-variant-numeric: tabular-nums;
+}
+/* Etage 3 : les pseudos volent depuis la liste commune vers leur colonne. */
+.equipe .pseudo.vole { animation: vole .62s cubic-bezier(.22,.85,.28,1.06) both; }
+@keyframes vole {
+  0%   { opacity: 0; transform: translate(-260px, 120px) scale(.7) rotate(-8deg); }
+  70%  { opacity: 1; transform: translate(6px, -4px) scale(1.02) rotate(1deg); }
+  100% { opacity: 1; transform: translate(0,0) scale(1) rotate(0); }
+}
+
+/* ---------------- E5 · Vous etes prets ---------------- */
+
+.e5-titre { top: 210px; font-size: 180px; position: absolute; left: 0; right: 0; }
+.e5-manche {
+  position: absolute; left: 0; right: 0; top: 640px; display: flex; justify-content: center;
+}
+.e5-manche span {
+  background: var(--jaune); border: 7px solid var(--noir); border-radius: 999px;
+  padding: 12px 44px; font-family: var(--texte); font-weight: 900; font-size: 44px;
+}
+
+/* ---------------- E6 · La manche ---------------- */
+
+.q-carte {
+  position: absolute; left: 60px; top: 172px; width: 1340px; min-height: 120px;
+  background: var(--creme); border: 8px solid var(--noir); border-radius: 30px;
+  display: grid; place-items: center; padding: 22px 34px;
+  font-family: var(--titre); font-weight: 600; font-size: 44px; text-align: center;
+  box-shadow: 0 8px 0 var(--noir);
+}
+.grille {
+  position: absolute; left: 60px; top: 322px; width: 1340px; height: 576px;
+  display: grid; grid-auto-flow: column; gap: 18px 20px;
+}
+.case {
+  position: relative;
+  background: var(--creme); border: 6px solid var(--noir); border-radius: 18px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 0 22px;
+  overflow: hidden;
+}
+.case-txt { font-family: var(--texte); font-weight: 900; text-transform: uppercase; line-height: 1.05; }
+.case-sub { font-family: var(--texte); font-weight: 800; font-size: 18px; color: #9A8A90; }
+.case-pts {
+  flex: none; background: var(--jaune); border: 5px solid var(--noir); border-radius: 999px;
+  display: grid; place-items: center; padding: 0 18px;
+  font-family: var(--texte); font-weight: 900; font-variant-numeric: tabular-nums;
+  transform: scale(0);
+}
+.case.levee .case-pts { animation: ptsArrive .34s cubic-bezier(.2,.9,.28,1.3) .16s forwards; }
+@keyframes ptsArrive { to { transform: scale(1); } }
+
+/* Le bandeau. C'est LE geste du jeu : bascule autour du bord haut. */
+.bandeau {
+  position: absolute; inset: -1px; z-index: 2;
+  background: var(--rose-vif);
+  border-radius: 18px;
+  transform-origin: top center;
+  overflow: hidden;
+}
+.case.levee .bandeau { animation: bandeauLeve .42s cubic-bezier(.2,.9,.3,1.12) forwards; }
+.case.cascade .bandeau { animation: bandeauLeve .82s cubic-bezier(.4,.02,.5,1) forwards; }
+/* scaleY et pas rotateX : une transformation 3D force un calque composite, et
+   Chromium cesse alors d'appliquer le decoupage de l'ancetre - le fond
+   repassait par-dessus le trou webcam pendant toute la cascade. Sans
+   perspective, rotateX rendait de toute facon un simple aplatissement
+   vertical : le resultat visuel est identique. */
+@keyframes bandeauLeve {
+  from { transform: scaleY(1) translateY(0); }
+  to   { transform: scaleY(0) translateY(-8%); }
+}
+/* Etage 1 : un reflet traverse les cases encore cachees, pour donner envie. */
+.bandeau::after {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+  transform: translateX(-160%) skewX(-18deg);
+  animation: refletPasse 12s ease-in-out infinite;
+  animation-delay: var(--reflet-retard, 0s);
+}
+@keyframes refletPasse {
+  0%, 82%, 100% { transform: translateX(-160%) skewX(-18deg); }
+  92%           { transform: translateX(260%) skewX(-18deg); }
+}
+/* Etat mineur : revelee en fin de manche, personne ne l'a trouvee. */
+.case.cascade { background: var(--creme-terne); }
+.case.cascade .case-txt { color: var(--gris-terne); }
+.case.cascade .case-pts { background: #E2DAC6; color: var(--gris-terne); }
+
+.manche-bandeau {
+  position: absolute; left: 60px; top: 926px; width: 1340px; height: 92px;
+  background: var(--creme); border: 7px solid var(--noir); border-radius: 999px;
+  display: grid; place-items: center;
+  font-family: var(--texte); font-weight: 900; font-size: 32px; letter-spacing: 2px;
+  box-shadow: 0 7px 0 var(--noir);
+  transition: transform .5s cubic-bezier(.2,.9,.3,1.1), background .5s ease, font-size .5s ease;
+}
+.manche-bandeau.double { background: var(--jaune); font-size: 40px; transform: scale(1.02); }
+
+.tchat {
+  position: absolute; left: 1440px; top: 172px; width: 440px; height: 508px;
+  background: var(--jaune-pale); border: 7px solid var(--noir); border-radius: 30px;
+  display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 7px 0 var(--noir);
+}
+.tchat-tete {
+  height: 66px; flex: none; background: var(--jaune);
+  border-bottom: 6px solid var(--noir);
+  display: grid; place-items: center;
+  font-family: var(--titre); font-weight: 600; font-size: 30px;
+}
+.tchat-liste { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 12px; overflow: hidden; }
+.tchat-l {
+  background: var(--creme); border: 4px solid var(--noir); border-radius: 16px;
+  padding: 6px 12px; font-family: var(--texte); font-weight: 800; font-size: 19px;
+  animation: ligneEntre .34s cubic-bezier(.2,.9,.3,1.1) both;
+}
+@keyframes ligneEntre { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+.tchat-qui { color: var(--rose-vif); margin-right: 8px; }
+.tchat-l.hit { background: var(--rose-clair); animation: ligneHit .5s cubic-bezier(.2,.9,.28,1.2) both; }
+.tchat-l.hit .tchat-qui { color: #C7255F; }
+@keyframes ligneHit {
+  0% { opacity: 0; transform: translateY(22px) scale(.9); }
+  60% { opacity: 1; transform: translateY(0) scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* ---------------- E7 · Points solo ---------------- */
+
+.points-grille {
+  position: absolute; inset: 120px 40px 40px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px 56px; align-content: start;
+}
+.points-l { display: flex; align-items: center; gap: 16px; }
+.points-rang {
+  flex: none; width: 52px; height: 52px; border-radius: 50%;
+  background: var(--rose-clair); border: 5px solid var(--noir);
+  display: grid; place-items: center;
+  font-family: var(--texte); font-weight: 900; font-size: 24px;
+}
+.points-l .pseudo { flex: 1; min-width: 0; height: 70px; }
+.points-val {
+  flex: none; width: 96px; height: 96px; border-radius: 50%;
+  background: var(--jaune); border: 6px solid var(--noir);
+  box-shadow: 0 6px 0 var(--noir);
+  font-family: var(--texte); font-weight: 900; font-size: 34px; font-variant-numeric: tabular-nums;
+  /* flex plutot que grid : en grid les deux lignes formaient deux rangees
+     auto-dimensionnees, ce qui creusait un vide entre le nombre et POINTS. */
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.points-val small { display: block; font-size: 12px; letter-spacing: 1px; line-height: 1; margin-top: 3px; }
+
+/* ---------------- E9 · Finale ---------------- */
+
+.finale-titre {
+  /* top 132 : le bandeau d'en-tete occupe 26 -> 118, on se pose dessous.
+     68px au lieu de 82 pour que les deux lignes tiennent avant le podium. */
+  position: absolute; left: 0; right: 0; top: 132px; text-align: center;
+  font-family: var(--display); font-weight: 900; font-size: 68px; line-height: .95;
+  color: var(--blanc-rose);
+  text-shadow:
+    -3px -3px 0 var(--noir), 3px -3px 0 var(--noir), -3px 3px 0 var(--noir), 3px 3px 0 var(--noir),
+    0 -4px 0 var(--noir), 0 4px 0 var(--noir), -4px 0 0 var(--noir), 4px 0 0 var(--noir),
+    9px 11px 0 var(--rose-vif), 13px 15px 0 var(--noir);
+}
+.finale-attente {
+  position: absolute; left: 50%; top: 600px; transform: translateX(-50%);
+  background: var(--creme); border: 7px solid var(--noir); border-radius: 999px;
+  padding: 18px 46px; font-family: var(--titre); font-weight: 600; font-size: 34px;
+}
+
+/* Le podium occupe le haut, le classement defile en dessous et remonte vers lui.
+   Les marches poussent depuis une ligne de sol commune a y=600. */
+.podium {
+  position: absolute; left: 320px; top: 290px; width: 1280px; height: 340px;
+  display: flex; align-items: flex-end; justify-content: center; gap: 32px;
+}
+.marche {
+  width: 320px; flex: none;
+  border: 8px solid var(--noir); border-radius: 22px 22px 0 0; border-bottom: none;
+  transform-origin: bottom center;
+  animation: marchePousse .5s cubic-bezier(.2,.9,.28,1.06) both;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 18px 12px 0;
+  overflow: hidden;
+}
+@keyframes marchePousse { 0% { transform: scaleY(0); } 70% { transform: scaleY(1.05); } 100% { transform: scaleY(1); } }
+/* order : le 1er au centre, le 2e a gauche, le 3e a droite. */
+.marche.m1 { height: 340px; background: var(--violet); order: 2; }
+.marche.m2 { height: 265px; background: #FFB8D4; order: 1; }
+.marche.m3 { height: 205px; background: var(--cyan);  order: 3; }
+.marche-rang {
+  font-family: var(--display); font-weight: 900; font-size: 76px; line-height: .9;
+  color: var(--blanc-rose); -webkit-text-stroke: 4px var(--noir);
+}
+.marche-nom {
+  max-width: 100%;
+  background: var(--creme); border: 5px solid var(--noir); border-radius: 999px;
+  padding: 6px 18px;
+  font-family: var(--texte); font-weight: 900; font-size: 24px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.marche-pts { font-family: var(--texte); font-weight: 900; font-size: 30px; }
+
+/* Le classement : les rangs arrivent par le bas et remontent vers le podium. */
+.finale-l {
+  position: absolute; left: 510px; width: 900px; height: 74px;
+  display: flex; align-items: center; gap: 16px;
+  transition: top .62s cubic-bezier(.2,.85,.3,1.04), opacity .45s ease;
+}
+.finale-l .rang {
+  flex: none; width: 60px; height: 60px; border-radius: 50%;
+  background: var(--jaune); border: 5px solid var(--noir);
+  display: grid; place-items: center;
+  font-family: var(--texte); font-weight: 900; font-size: 26px;
+}
+.finale-l .pseudo { flex: 1; min-width: 0; height: 66px; }
+.finale-l .pts {
+  flex: none; background: var(--jaune); border: 5px solid var(--noir); border-radius: 999px;
+  padding: 6px 20px; font-family: var(--texte); font-weight: 900; font-size: 28px;
+}
+/* Passe sous le podium : on s'efface en remontant. */
+.finale-l.sorti { opacity: 0; }
+
+.confetti { position: absolute; width: 16px; height: 22px; top: -80px; animation: confTombe 2.6s cubic-bezier(.35,.1,.6,1) forwards; }
+@keyframes confTombe {
+  0%   { transform: translateY(-80px) rotate(0); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(1180px) rotate(720deg); opacity: 0; }
+}
+
+/* Duel : 2 equipes, pas de podium a trois marches. */
+.duel {
+  position: absolute; top: 300px; width: 700px; height: 360px;
+  border: 8px solid var(--noir); border-radius: 30px; padding: 30px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  animation: marchePousse .5s cubic-bezier(.2,.9,.28,1.06) both;
+}
+.duel.d1 { left: 1010px; }
+.duel.d2 { left: 210px; }
+.duel-nom { font-family: var(--titre); font-weight: 600; font-size: 44px; text-align: center; }
+.duel-pts { font-family: var(--texte); font-weight: 900; font-size: 86px; font-variant-numeric: tabular-nums; }
+
+/* Selecteur de paquet : visible uniquement en regie, il n'a rien a faire
+   a l'antenne. Pose sous les deux boutons de l'ecran titre. */
+.e1-paquet { display: none; }
+body.regie .e1-paquet {
+  display: block; margin-top: 10px;
+  border: 6px solid var(--noir); border-radius: 999px;
+  background: var(--creme); padding: 12px 24px;
+  font-family: var(--titre); font-weight: 600; font-size: 26px;
+  cursor: pointer; max-width: 560px;
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Préparer les questions - Une famille en or</title>
+<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="./prep.css">
+</head>
+<body class="prep">
+
+<header class="p-tete">
+  <div>
+    <h1 class="p-titre">PRÉPARER LES QUESTIONS</h1>
+    <p class="p-sous">Une famille en or - 6 manches par session</p>
+  </div>
+  <a class="p-retour" href="./index.html?vue=regie">← la régie</a>
+</header>
+
+<main class="p-corps">
+
+  <aside class="p-cote">
+    <div class="p-cote-tete">
+      <h2>Mes paquets</h2>
+      <button class="p-btn p-btn-go" id="nouveau">+ Nouveau</button>
+    </div>
+    <div class="p-liste" id="liste"></div>
+  </aside>
+
+  <section class="p-questions" id="questions">
+    <div class="p-vide" id="vide">
+      <div class="p-vide-etoile"></div>
+      <p>Choisis un paquet à gauche, ou crée-en un nouveau.</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="p-toast" id="toast"></div>
+
+<script type="module" src="./prep.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# Fins de ligne normalisees en LF dans le depot, quel que soit le poste.
+* text=auto eol=lf
+*.woff2 binary
+*.pdf binary

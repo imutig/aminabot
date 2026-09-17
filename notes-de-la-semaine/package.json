@@ -1,0 +1,15 @@
+{
+  "name": "notes-de-la-semaine",
+  "version": "2.0.0",
+  "description": "Bot Twitch + overlay OBS pour le segment \"Les notes de la semaine\"",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=../.env src/index.js",
+    "demo": "node --env-file-if-exists=../.env src/index.js --demo"
+  },
+  "dependencies": {
+    "tmi.js": "^1.8.5",
+    "ws": "^8.18.0"
+  }
+}

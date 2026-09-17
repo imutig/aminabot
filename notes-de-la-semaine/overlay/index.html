@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Les notes de la semaine — overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div class="stage">
+ <div class="frame">
+  <div class="canvas" id="canvas">
+
+   <!-- ============ CIEL (masque du trou de cam) ============ -->
+   <svg class="layer" viewBox="0 0 1920 1080">
+     <defs>
+       <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+         <stop offset="0" stop-color="#79BEEC"></stop>
+         <stop offset="0.55" stop-color="#9FD2F2"></stop>
+         <stop offset="1" stop-color="#BFE3F8"></stop>
+       </linearGradient>
+       <mask id="camHoleSky" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">
+         <rect x="0" y="0" width="1920" height="1080" fill="#FFFFFF"></rect>
+         <g fill="#000000" data-cam-anchor>
+           <path data-cam-path></path>
+         </g>
+       </mask>
+     </defs>
+     <g mask="url(#camHoleSky)">
+       <rect x="0" y="0" width="1920" height="1080" fill="url(#skyGrad)"></rect>
+       <rect id="mood" x="0" y="0" width="1920" height="1080" fill="#FFFFFF" opacity="0"></rect>
+
+       <g opacity=".5">
+         <g class="loop" style="animation-duration: 210s;">
+           <g transform="translate(0 0)">
+             <g transform="translate(60 84) scale(.78)" fill="#E3F1FC"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g>
+             <g transform="translate(620 36) scale(.9)" fill="#E9F4FD"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+             <g transform="translate(1120 120) scale(.85)" fill="#E3F1FC"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g>
+             <g transform="translate(1540 54) scale(.72)" fill="#E9F4FD"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+           </g>
+           <g transform="translate(1920 0)">
+             <g transform="translate(60 84) scale(.78)" fill="#E3F1FC"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g>
+             <g transform="translate(620 36) scale(.9)" fill="#E9F4FD"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+             <g transform="translate(1120 120) scale(.85)" fill="#E3F1FC"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g>
+             <g transform="translate(1540 54) scale(.72)" fill="#E9F4FD"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+           </g>
+         </g>
+       </g>
+
+       <g opacity=".8">
+         <g class="loop" style="animation-duration: 145s;">
+           <g transform="translate(0 0)">
+             <g transform="translate(170 296) scale(1.05)"><g fill="#C6E3F6"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g><g transform="translate(0 6) scale(.93)" fill="#F4FAFE"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></g>
+             <g transform="translate(780 232) scale(.95)"><g fill="#C6E3F6"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g><g transform="translate(0 6) scale(.96)" fill="#F4FAFE"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g></g>
+             <g transform="translate(1330 318) scale(1.1)"><g fill="#C6E3F6"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 6) scale(.95)" fill="#F4FAFE"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></g>
+           </g>
+           <g transform="translate(1920 0)">
+             <g transform="translate(170 296) scale(1.05)"><g fill="#C6E3F6"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g><g transform="translate(0 6) scale(.93)" fill="#F4FAFE"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></g>
+             <g transform="translate(780 232) scale(.95)"><g fill="#C6E3F6"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g><g transform="translate(0 6) scale(.96)" fill="#F4FAFE"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g></g>
+             <g transform="translate(1330 318) scale(1.1)"><g fill="#C6E3F6"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 6) scale(.95)" fill="#F4FAFE"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></g>
+           </g>
+         </g>
+       </g>
+
+       <g>
+         <g class="loop" style="animation-duration: 98s;">
+           <g transform="translate(0 0)">
+             <g transform="translate(-40 872) scale(1.3)"><g fill="#B9DCF3"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g><g transform="translate(0 7) scale(.965)" fill="#FFFFFF"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g></g>
+             <g transform="translate(700 904) scale(1.4)"><g fill="#B9DCF3"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 7) scale(.955)" fill="#FFFFFF"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></g>
+             <g transform="translate(1320 852) scale(1.45)"><g fill="#B9DCF3"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g><g transform="translate(0 7) scale(.94)" fill="#FFFFFF"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></g>
+           </g>
+           <g transform="translate(1920 0)">
+             <g transform="translate(-40 872) scale(1.3)"><g fill="#B9DCF3"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g><g transform="translate(0 7) scale(.965)" fill="#FFFFFF"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g></g>
+             <g transform="translate(700 904) scale(1.4)"><g fill="#B9DCF3"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 7) scale(.955)" fill="#FFFFFF"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></g>
+             <g transform="translate(1320 852) scale(1.45)"><g fill="#B9DCF3"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g><g transform="translate(0 7) scale(.94)" fill="#FFFFFF"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></g>
+           </g>
+         </g>
+       </g>
+     </g>
+   </svg>
+
+   <!-- ============ PANNEAU PRINCIPAL (S1–S5) ============ -->
+   <!-- Part cache : au repos on ne voit que le ciel et l'emplacement cam.
+        L'apparition se joue au lancement du segment (S1). -->
+   <div class="col out hidden" id="panel">
+     <svg class="panel-cloud-a" viewBox="0 0 240 130"><g fill="#D9EBF8"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 5) scale(.95)" fill="#FFFDFB"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></svg>
+     <svg class="panel-cloud-b" viewBox="0 0 180 110"><g fill="#D9EBF8"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g><g transform="translate(0 5) scale(.94)" fill="#FFFDFB"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></svg>
+
+     <div class="card" id="panelCard">
+       <div class="head" id="panelHead">
+         <div class="title" id="panelTitle">Les notes de la semaine</div>
+         <div class="head-row">
+           <div class="week" id="weekChip">Semaine du 24 → 30 juillet</div>
+           <div class="cols" id="colHeads">
+             <div class="col-h col-amina" id="colAmina">Amina</div>
+             <div class="col-h col-chat">Chat</div>
+           </div>
+         </div>
+       </div>
+       <div class="rows" id="rowList"></div>
+       <div id="globalSlot"></div>
+     </div>
+   </div>
+
+   <!-- ============ HALL OF FAME (S6–S7) ============ -->
+   <div class="col hof" id="hof">
+     <div class="rays" id="rays"></div>
+     <div class="rain" id="rain">
+       <svg class="rain-cloud" viewBox="0 0 240 130"><g fill="#8FA8C6"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g><g transform="translate(0 5) scale(.95)" fill="#B4C9E0"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></svg>
+     </div>
+     <div class="hof-card" id="hofCard">
+       <div class="hof-chip st1" id="hofChip">Hall of fame</div>
+       <div class="hof-title st1" id="hofTitle">Meilleure semaine</div>
+       <div class="hof-sub st1" id="hofSub">Celui qui a kiffé sa semaine</div>
+       <div class="hof-names st2" id="hofNames"></div>
+       <div class="hof-score st3" id="hofScore">—<span class="hof-slash">/10</span></div>
+       <div class="hof-foot st3" id="hofFoot">moyenne sur 8 critères</div>
+     </div>
+     <div class="confetti" id="confetti"></div>
+   </div>
+
+   <!-- ============ CLASSEMENT (S8) ============ -->
+   <div class="col rank" id="rank">
+     <div class="rank-title">Classement de la semaine</div>
+     <div class="rank-sub" id="rankSub">0 viewers ont noté leur semaine</div>
+     <div class="podium" id="podium"></div>
+     <div class="rank-box">
+       <div class="rank-mask">
+         <div class="rank-list" id="rankList"></div>
+       </div>
+     </div>
+   </div>
+
+   <!-- ============ FEED DES VOTES (sous le tableau) ============ -->
+   <!-- Le chat est visible en permanence, y compris avant le lancement. -->
+   <div class="col feed in" id="feed">
+     <div class="feed-card">
+       <div class="feed-list" id="feedList"></div>
+     </div>
+     <!-- Hors de la carte : elle a overflow:hidden, la pastille y serait
+          rognee et passerait sous les messages. -->
+     <div class="feed-live"><span class="feed-dot"></span>chat</div>
+   </div>
+
+   <!-- ============ BANDE SOUS LA CAM ============ -->
+   <div class="strip" id="strip">
+     <div class="hint" id="hint">
+       <div class="hint-chip">0 → 10</div>
+       <div class="hint-text">Note ta semaine : tape un chiffre de 0 à 10 dans le chat</div>
+     </div>
+     <div class="calc" id="calc">
+       <div class="calc-spin">
+         <svg class="calc-c1" viewBox="0 0 180 110"><g fill="#F5C6DC"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></svg>
+         <svg class="calc-c2" viewBox="0 0 180 110"><g fill="#CFE0F5"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g></svg>
+       </div>
+       <div class="calc-body">
+         <div class="calc-line">
+           <div class="calc-label">Calcul des notes…</div>
+           <div class="calc-num" id="calcNum">0.0</div>
+         </div>
+         <div class="calc-track"><div class="calc-fill" id="calcFill"></div></div>
+       </div>
+     </div>
+   </div>
+
+   <!-- ============ RIDEAU DE TRANSITION ============ -->
+   <svg class="layer" id="curtainSvg" viewBox="0 0 1920 1080">
+     <defs>
+       <mask id="camHoleCurtain" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">
+         <rect x="0" y="0" width="1920" height="1080" fill="#FFFFFF"></rect>
+         <g fill="#000000" data-cam-anchor>
+           <path data-cam-path></path>
+         </g>
+       </mask>
+     </defs>
+     <g mask="url(#camHoleCurtain)">
+       <g id="curtain">
+         <rect x="-1930" y="-200" width="1930" height="1480" fill="#EAF5FE"></rect>
+         <g transform="translate(-980 180) scale(1.7)" fill="#FFFFFF" opacity=".55"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g>
+         <g transform="translate(-1180 720) scale(1.5)" fill="#FFFFFF" opacity=".45"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+         <g transform="translate(-150 -10) scale(1.85)" fill="#EAF5FE"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+         <g transform="translate(-260 290) scale(1.55)" fill="#EAF5FE"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g>
+         <g transform="translate(-130 600) scale(1.95)" fill="#EAF5FE"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g>
+         <g transform="translate(-110 880) scale(2.4)" fill="#EAF5FE"><rect x="26" y="70" width="130" height="38" rx="19"></rect><circle cx="62" cy="62" r="38"></circle><circle cx="114" cy="54" r="42"></circle><circle cx="148" cy="78" r="28"></circle></g>
+       </g>
+     </g>
+   </svg>
+
+   <!-- ============ CADRE DE LA CAM (toujours au-dessus) ============ -->
+   <svg class="layer" viewBox="0 0 1920 1080">
+     <g data-cam-anchor>
+       <g id="camPlaceholder">
+         <path data-cam-path fill="#CFE0EE"></path>
+         <text x="0" y="26" text-anchor="middle" class="cam-label">CAM</text>
+       </g>
+       <path data-cam-path fill="none" stroke="#B7D8F0" stroke-width="26" stroke-linejoin="round"></path>
+       <path data-cam-path fill="none" stroke="#FFFFFF" stroke-width="16" stroke-linejoin="round"></path>
+     </g>
+   </svg>
+
+  </div>
+ </div>
+</div>
+
+<script type="module" src="./overlay.js"></script>
+</body>
+</html>

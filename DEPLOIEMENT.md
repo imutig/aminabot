@@ -155,7 +155,13 @@ Deuxième service Railway, **dans le même projet et depuis le même dépôt**.
 
    Comme ça, le jour où tu régénères le jeton, tu le changes à **un seul
    endroit**. Notes n'a pas besoin des variables Convex.
-4. **Settings** → **Networking** → **Generate Domain**.
+4. **`CONTROL_PIN`**, sur le service Notes uniquement (pas en Shared Variable,
+   il ne sert qu'à lui) : le code d'accès à la télécommande `/control`.
+
+   ⚠️ **À ne pas oublier.** Sans lui, l'adresse est publique et n'importe qui
+   peut lancer, arrêter ou remettre à zéro le segment en plein direct. Le
+   service le rappelle dans ses logs au démarrage.
+5. **Settings** → **Networking** → **Generate Domain**.
 
 Le port est fourni par Railway et lu automatiquement.
 

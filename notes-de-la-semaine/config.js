@@ -6,6 +6,15 @@ export const config = {
   // En local 4747 ; en ligne, l'hebergeur impose son port via PORT.
   port: Number(process.env.PORT) || 4747,
 
+  /* Code d'acces a la telecommande, dans la variable d'environnement
+     CONTROL_PIN. Vide = pas de verrou (pratique en local).
+
+     Le verrou porte sur les COMMANDES, pas sur la page : l'adresse /control
+     ne cache rien, c'est le WebSocket qui refuse tout ce qui pilote le
+     segment tant qu'on ne s'est pas annonce. Proteger seulement le HTML ne
+     servirait a rien, n'importe qui pourrait ouvrir une socket a la main. */
+  controlPin: (process.env.CONTROL_PIN || '').trim(),
+
   // ---- Scene ----
   // Cote ou se trouve la fenetre cam dans l'overlay : 'gauche' ou 'droite'.
   camSide: 'gauche',

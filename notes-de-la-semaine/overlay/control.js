@@ -15,7 +15,47 @@ const S = { etapes: [], criteres: [], etat: null, tallies: {}, aminaName: 'Amina
 
 let ws = null;
 const envoyer = (m) => { if (ws && ws.readyState === 1) ws.send(JSON.stringify(m)); };
-const cmd = (act, extra = {}) => envoyer({ t: 'cmd', act, ...extra });
+
+/* Tant que la telecommande n'est pas deverrouillee, on n'envoie rien : le
+   serveur refuserait de toute facon, et chaque refus viendrait s'afficher a
+   l'ecran. Seule la lecture de l'etat reste libre, des deux cotes. */
+let deverrouille = false;   // ouvert par le « hello » du serveur
+const cmd = (act, extra = {}) => { if (deverrouille) envoyer({ t: 'cmd', act, ...extra }); };
+
+// ---------------------------------------------------------------- verrou
+
+const CLE_CODE = 'notes.regie.code';
+let codeConnu = null;
+try { codeConnu = localStorage.getItem(CLE_CODE); } catch { /* navigation privee */ }
+
+function montrerVerrou(message) {
+  deverrouille = false;
+  $('verrouEcran').classList.remove('off');
+  $('verrouErr').textContent = message || '';
+  $('verrouBtn').disabled = false;
+  $('verrouCode').value = '';
+  $('verrouCode').focus();
+}
+
+function cacherVerrou() {
+  deverrouille = true;
+  $('verrouEcran').classList.add('off');
+  $('verrouErr').textContent = '';
+}
+
+function tenterCode(code) {
+  $('verrouBtn').disabled = true;
+  $('verrouErr').textContent = '';
+  envoyer({ t: 'pin', code });
+}
+
+$('verrouForm').onsubmit = (e) => {
+  e.preventDefault();
+  const code = $('verrouCode').value.trim();
+  if (!code) return;
+  codeConnu = code;
+  tenterCode(code);
+};
 
 // ---------------------------------------------------------------- rendu
 
@@ -205,7 +245,7 @@ function reinitCriteres() {
    votants, la pousser a chaque vote sature la liaison pour un panneau qu'on
    ne regarde que par moments. On la rafraichit toutes les 4 s, et tout de
    suite apres une action. */
-const demanderGens = () => envoyer({ t: 'participants?' });
+const demanderGens = () => { if (deverrouille) envoyer({ t: 'participants?' }); };
 
 function construireGens() {
   const box = $('gensListe');
@@ -267,13 +307,38 @@ function connecter() {
       S.etapes = m.etapes;
       S.criteres = m.criteres;
       S.etat = m.etat;
+      /* Le serveur dit s'il faut un code. On retente d'abord celui qu'on a
+         deja : apres un redemarrage du serveur, elle ne doit pas le retaper
+         en plein direct. */
+      if (m.verrouille) {
+        if (codeConnu) tenterCode(codeConnu);
+        else montrerVerrou('');
+      } else {
+        cacherVerrou();
+      }
       S.aminaName = m.reglages.aminaName || 'Amina';
       $('nomAmina').textContent = S.aminaName;
       construireEtapes();
       construireNotes();
       reinitCriteres();
       peindre();
-      demanderGens();
+      if (deverrouille) demandeInitiale();
+      return;
+    }
+    if (m.t === 'pin') {
+      if (m.ok) {
+        try { localStorage.setItem(CLE_CODE, codeConnu || ''); } catch { /* tant pis */ }
+        cacherVerrou();
+        demandeInitiale();
+        return;
+      }
+      // Code refuse : on oublie celui qu'on gardait, sinon on le rejouerait
+      // en boucle a chaque reconnexion.
+      codeConnu = null;
+      try { localStorage.removeItem(CLE_CODE); } catch { /* tant pis */ }
+      montrerVerrou(m.attendre
+        ? `Code refusé. Nouvel essai possible dans ${m.attendre} s.`
+        : 'Code refusé.');
       return;
     }
     if (m.t === 'participants') {
@@ -313,6 +378,8 @@ function connecter() {
 // Le serveur renvoie un snapshot complet a la demande : plus simple que de
 // maintenir un miroir de l'etat cote telecommande.
 const demanderEtat = () => envoyer({ t: 'etat?' });
+// Ce qu'on va chercher des qu'on a le droit d'emettre.
+const demandeInitiale = () => { demanderGens(); demanderEtat(); };
 
 // ---------------------------------------------------------------- branchements
 
@@ -340,7 +407,7 @@ $('critAnnuler').onclick = () => reinitCriteres();
 $('critSauver').onclick = () => {
   const liste = S.brouillon.filter((c) => c.nom.trim());
   if (liste.length < 2) { $('critEtat').textContent = 'il faut au moins 2 critères'; return; }
-  envoyer({ t: 'cmd', act: 'criteres', liste });
+  cmd('criteres', { liste });
 };
 
 // Fleches clavier : pratique sur un second ecran.

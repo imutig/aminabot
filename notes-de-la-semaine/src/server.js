@@ -1,6 +1,7 @@
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
 import { config } from '../config.js';
@@ -22,8 +23,39 @@ const MIME = {
 // l'impression que la telecommande ne fait rien.
 const INSTANCE = Math.random().toString(36).slice(2, 10);
 
+/* Comparaison a duree constante : sur un code a quatre chiffres, comparer
+   caractere par caractere laisse fuiter le prefixe correct par le temps de
+   reponse. Le cout est nul, autant le faire bien. */
+function memeCode(a, b) {
+  const x = Buffer.from(String(a));
+  const y = Buffer.from(String(b));
+  if (x.length !== y.length) return false;
+  return crypto.timingSafeEqual(x, y);
+}
+
 export function demarrerServeur(session, { onLog } = {}) {
   const log = onLog || (() => {});
+
+  const PIN = config.controlPin;
+  if (!PIN) {
+    log("⚠ CONTROL_PIN non défini : la télécommande est ouverte à qui a l'adresse");
+  }
+
+  /* Anti-force brute. Un code a quatre chiffres, c'est dix mille essais :
+     quelques minutes pour un script s'il peut enchainer les tentatives.
+     On compte les echecs par adresse et on ferme la porte de plus en plus
+     longtemps. Le compteur repart a zero apres un succes. */
+  const echecs = new Map();   // ip -> { n, jusqua }
+  const attenteApres = (n) => (n < 3 ? 0 : n < 6 ? 5000 : n < 10 ? 30000 : 300000);
+
+  const bloqueJusqua = (ip) => echecs.get(ip)?.jusqua || 0;
+  const noterEchec = (ip) => {
+    const e = echecs.get(ip) || { n: 0, jusqua: 0 };
+    e.n += 1;
+    e.jusqua = Date.now() + attenteApres(e.n);
+    echecs.set(ip, e);
+    return e;
+  };
 
   const serveur = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://localhost');
@@ -55,12 +87,18 @@ export function demarrerServeur(session, { onLog } = {}) {
     for (const ws of clients) if (ws.readyState === 1) ws.send(s);
   };
 
-  wss.on('connection', (ws) => {
+  wss.on('connection', (ws, req) => {
     clients.add(ws);
+    /* Une socket est en lecture seule tant qu'elle ne s'est pas annoncee.
+       L'overlay dans OBS n'a rien a taper : il ne fait que lire. */
+    ws.autorise = !PIN;
+    ws.ip = req.socket.remoteAddress || 'inconnue';
     log(`Overlay connecte (${clients.size} actif${clients.size > 1 ? 's' : ''})`);
     envoyer(ws, {
       t: 'hello',
       instance: INSTANCE,
+      // La page apprend ici s'il faut demander un code.
+      verrouille: !!PIN,
       reglages: {
         camSide: config.camSide,
         camPlaceholder: config.camPlaceholder,
@@ -75,7 +113,32 @@ export function demarrerServeur(session, { onLog } = {}) {
     ws.on('message', (raw) => {
       let m;
       try { m = JSON.parse(raw); } catch { return; }
+      if (m.t === 'pin') {
+        if (!PIN) { ws.autorise = true; envoyer(ws, { t: 'pin', ok: true }); return; }
+        const reste = bloqueJusqua(ws.ip) - Date.now();
+        if (reste > 0) {
+          envoyer(ws, { t: 'pin', ok: false, attendre: Math.ceil(reste / 1000) });
+          return;
+        }
+        if (memeCode(m.code || '', PIN)) {
+          ws.autorise = true;
+          echecs.delete(ws.ip);
+          log(`telecommande deverrouillee (${ws.ip})`);
+          envoyer(ws, { t: 'pin', ok: true });
+        } else {
+          const e = noterEchec(ws.ip);
+          log(`⚠ code refuse (${ws.ip}, ${e.n} echec${e.n > 1 ? 's' : ''})`);
+          envoyer(ws, { t: 'pin', ok: false, attendre: Math.ceil(attenteApres(e.n) / 1000) });
+        }
+        return;
+      }
+
+      // La lecture de l'etat reste libre : c'est ce dont vit l'overlay.
       if (m.t === 'etat?') { envoyer(ws, { t: 'etat', etat: session.snapshot() }); return; }
+
+      // Tout le reste pilote le segment : il faut s'etre annonce.
+      if (!ws.autorise) { envoyer(ws, { t: 'refus', raison: 'code requis' }); return; }
+
       /* La liste des participants ne part qu'a qui la demande : c'est la
          telecommande qui la consulte, l'overlay n'en a pas besoin, et avec
          300 votants ce serait une diffusion inutile a chaque vote. */

@@ -64,6 +64,24 @@ régler le placement dans OBS.
 à ouvrir sur un second écran (ou sur le téléphone en dépannage : même wifi,
 remplace `localhost` par l'IP du PC).
 
+### Le code d'accès
+
+La télécommande est protégée par un code, dans la variable d'environnement
+**`CONTROL_PIN`**. Sans elle, la page reste ouverte à qui connaît l'adresse -
+ce qui va en local, jamais en ligne. Le serveur le rappelle au démarrage.
+
+Le verrou porte sur les **commandes**, pas sur la page : `/control` ne cache
+aucun secret, c'est le WebSocket qui refuse tout ce qui pilote le segment tant
+que la connexion ne s'est pas annoncée. Protéger seulement le HTML ne servirait
+à rien, il suffirait d'ouvrir une socket à la main. L'overlay, lui, n'a rien à
+taper : **la lecture reste libre**, sinon OBS ne pourrait plus afficher.
+
+Le code est retenu par le navigateur : à taper une fois, et l'overlay comme la
+régie se reconnectent tout seuls si le serveur redémarre en plein direct. Trois
+codes faux d'affilée déclenchent une temporisation qui s'allonge (5 s, puis
+30 s, puis 5 min) - un code à quatre chiffres, c'est dix mille essais, quelques
+minutes pour un script sans cela.
+
 La page occupe exactement la hauteur de l'écran et **ne défile jamais** : ce
 sont les listes, à l'intérieur des panneaux, qui défilent.
 

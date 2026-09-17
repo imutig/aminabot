@@ -442,3 +442,47 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .live { flex-wrap: wrap; padding-bottom: 12px; }
   .live #btnAnnuler { margin-left: 0; width: 100%; }
 }
+
+/* ================= Verrouillage ================= */
+
+/* Le verrou n'est qu'une porte d'entree visuelle : c'est le serveur qui
+   refuse les commandes tant que la socket ne s'est pas annoncee. Cacher la
+   page sans cela ne protegerait rien. */
+.verrou-ecran {
+  position: fixed; inset: 0; z-index: 100;
+  display: grid; place-items: center;
+  padding: 20px;
+  background: var(--fond);
+}
+.verrou-ecran.off { display: none; }
+
+.verrou-carte {
+  width: 100%; max-width: 340px;
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 26px;
+  background: var(--panneau);
+  border: 1px solid var(--trait-1); border-radius: 16px;
+  box-shadow: 0 18px 44px -28px rgba(46, 20, 38, .5);
+}
+.verrou-titre {
+  font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 19px;
+  letter-spacing: -.2px; color: var(--rose-fonce);
+  margin-bottom: 4px;
+}
+.verrou-label {
+  font-size: 11.5px; font-weight: 800; letter-spacing: .4px;
+  text-transform: uppercase; color: var(--encre-faible);
+}
+.verrou-code {
+  height: 46px; padding: 0 14px;
+  border: 1px solid var(--trait-1); border-radius: 10px;
+  background: var(--creux);
+  font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 22px;
+  letter-spacing: 6px; color: var(--encre);
+}
+.verrou-code:focus { outline: none; background: var(--panneau); border-color: var(--rose-trait); }
+.verrou-err {
+  min-height: 17px;
+  font-size: 12.5px; font-weight: 800; color: var(--rouge);
+}
+.verrou-carte .bt-large { margin-top: 2px; }

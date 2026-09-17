@@ -153,6 +153,18 @@
   </main>
 </div>
 
+<!-- Ecran de verrouillage. Masque tant que le serveur n'annonce pas de code. -->
+<div class="verrou-ecran off" id="verrouEcran">
+  <form class="verrou-carte" id="verrouForm">
+    <div class="verrou-titre">Régie des notes de la semaine</div>
+    <label class="verrou-label" for="verrouCode">Code d'accès</label>
+    <input class="verrou-code" id="verrouCode" type="password" inputmode="numeric"
+           autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="24">
+    <div class="verrou-err" id="verrouErr"></div>
+    <button class="bt bt-plein bt-large" id="verrouBtn" type="submit">Déverrouiller</button>
+  </form>
+</div>
+
 <script type="module" src="./control.js"></script>
 </body>
 </html>

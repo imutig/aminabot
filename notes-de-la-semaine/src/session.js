@@ -49,6 +49,7 @@ export class Session extends EventEmitter {
     this.weekLabel = config.weekLabel || libelleSemaine();
     this.rows = this.criteres.map(() => ({ votes: new Map(), amina: null, locked: false }));
     this.viewers = [];
+    this.bilan = { participants: 0, classes: 0, criteres: this.criteres.length };
     this.emit('etat', this.snapshot());
   }
 
@@ -100,7 +101,8 @@ export class Session extends EventEmitter {
       id: etape.id,
       label: etape.label,
       activeIndex: this.activeIndex,
-      viewers: this.viewers
+      viewers: this.viewers,
+      bilan: this.bilan
     });
     return true;
   }
@@ -152,11 +154,19 @@ export class Session extends EventEmitter {
 
   tally(i) {
     const row = this.rows[i];
-    if (!row) return { index: i, count: 0, avg: 0 };
+    const cases = config.maxNote - config.minNote + 1;
+    if (!row) return { index: i, count: 0, avg: 0, dist: new Array(cases).fill(0) };
+    /* La repartition part avec la moyenne : elle se calcule dans la meme
+       boucle, et une moyenne de 6 peut aussi bien vouloir dire « tout le
+       monde a mis 6 » que « la moitie a mis 0 et l'autre 10 ». */
+    const dist = new Array(cases).fill(0);
     let sum = 0;
-    for (const v of row.votes.values()) sum += v.note;
+    for (const v of row.votes.values()) {
+      sum += v.note;
+      dist[v.note - config.minNote] += 1;
+    }
     const count = row.votes.size;
-    return { index: i, count, avg: count ? sum / count : 0 };
+    return { index: i, count, avg: count ? sum / count : 0, dist };
   }
 
   // ---- Participants ----
@@ -220,11 +230,14 @@ export class Session extends EventEmitter {
 
   // Moyenne de chaque viewer sur SES notes, ponderee par le coefficient
   // de chaque critere. Un critere a coef 2 pese double dans sa moyenne.
-  classement() {
-    const seuil = config.minCriteresPourClasser != null
-      ? config.minCriteresPourClasser
-      : Math.ceil(this.criteres.length * 0.75);
+  /* Seuls les viewers qui ont note TOUS les criteres sont classes.
 
+     Comparer une moyenne sur huit notes a une moyenne sur deux n'a pas de
+     sens : quelqu'un qui n'a note que « les petits plaisirs » finirait devant
+     tout le monde. C'est aussi la seule regle qui s'annonce en une phrase a
+     l'antenne, et l'ecran du classement le dit. */
+  classement() {
+    const total = this.rows.length;
     const parViewer = new Map();
     this.rows.forEach((row, i) => {
       const coef = this.criteres[i].coef ?? 1;
@@ -238,13 +251,12 @@ export class Session extends EventEmitter {
       }
     });
 
-    let list = [...parViewer.values()].filter((e) => e.n >= seuil);
-    // Si le seuil vide le classement (peu de votants), on l'abaisse progressivement.
-    if (list.length < 3) {
-      for (let s = seuil - 1; s >= 1 && list.length < 3; s--) {
-        list = [...parViewer.values()].filter((e) => e.n >= s);
-      }
-    }
+    let list = [...parViewer.values()].filter((e) => e.n >= total);
+
+    /* De quoi expliquer le classement a l'ecran : combien ont participe,
+       combien sont classes. Sans ca, quelqu'un qui a vote et ne se voit pas
+       croit a un bug. */
+    this.bilan = { participants: parViewer.size, classes: list.length, criteres: total };
 
     list = list.map((e) => ({
       name: e.name,
@@ -271,9 +283,10 @@ export class Session extends EventEmitter {
       // Un overlay qui se recharge en pleine emission doit retrouver la
       // semaine du viewer qui etait affichee.
       focus: this.focusActuel(),
+      bilan: this.bilan,
       rows: this.rows.map((r, i) => {
         const t = this.tally(i);
-        return { count: t.count, avg: t.avg, amina: r.amina, locked: r.locked };
+        return { count: t.count, avg: t.avg, dist: t.dist, amina: r.amina, locked: r.locked };
       }),
       viewers: this.viewers
     };

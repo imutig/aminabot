@@ -639,3 +639,40 @@ html, body {
 /* La semaine du viewer se lit en entier, y compris sur les criteres qui ne
    sont pas encore passes : sinon la moitie du tableau reste en veille. */
 .card.focus .gauge-c { opacity: 1; }
+
+/* ---------------- Repartition des votes ---------------- */
+
+/* Onze batonnets, un par note, sur la ligne en cours seulement. La moyenne
+   ecrase la forme : « 6.0 » peut etre un consensus ou deux camps. C'est la
+   forme qui fait le moment a l'antenne. */
+.hist {
+  flex: none; width: 138px;
+  display: none; flex-direction: column; gap: 4px;
+  opacity: 0;
+  transition: opacity .45s ease;
+}
+.row.active .hist { display: flex; opacity: 1; }
+
+.hist-barres { display: flex; align-items: flex-end; gap: 3px; height: 34px; }
+.hist-col {
+  flex: 1 1 0; height: 100%;
+  display: flex; align-items: flex-end;
+  border-radius: 3px;
+  background: #F6EAF1;
+  overflow: hidden;
+}
+/* Un fond de barre a hauteur nulle resterait invisible : le minimum garde la
+   graduation lisible meme quand personne n'a mis cette note. */
+.hist-col > i {
+  display: block; width: 100%; height: 0;
+  min-height: 3px;
+  border-radius: 3px;
+  transition: height .4s cubic-bezier(.33, 1, .68, 1);
+}
+
+.hist-ax {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1px;
+  font-weight: 800; font-size: 11px;
+  color: var(--point-inactif);
+}

@@ -53,13 +53,14 @@ const S = {
   active: -1,
   // Viewer dont la semaine remplace les moyennes du chat, ou null.
   focus: null,
+  bilan: { participants: 0, classes: 0, criteres: 0 },
   weekLabel: '',
   timers: [],
   calcRun: false,
   calcStart: 0
 };
 
-const newRow = () => ({ count: 0, avg: 0, disp: 0, amina: null, state: 'upcoming', verdict: '', entered: false, pulse: false });
+const newRow = () => ({ count: 0, avg: 0, disp: 0, dist: [], amina: null, state: 'upcoming', verdict: '', entered: false, pulse: false });
 
 const after = (ms, fn) => { const id = setTimeout(fn, ms); S.timers.push(id); return id; };
 const clearTimers = () => { S.timers.forEach(clearTimeout); S.timers = []; };
@@ -121,6 +122,24 @@ function construireLignes() {
     votesN.textContent = '0';
     const verdict = el('div', 'verdict', meta);
 
+    /* Repartition des votes, visible seulement sur la ligne en cours.
+       Une moyenne de 6 peut vouloir dire « tout le monde a mis 6 » ou « la
+       moitie a mis 0 et l'autre 10 » : c'est la forme qui fait le moment. */
+    const hist = el('div', 'hist', row);
+    const barres = el('div', 'hist-barres', hist);
+    const hBars = [];
+    for (let n = 0; n <= 10; n++) {
+      const col = el('div', 'hist-col', barres);
+      const f = el('i', null, col);
+      f.style.background = noteColor(n);
+      hBars.push(f);
+    }
+    /* Juste les deux bornes : a 10 px de haut, un libelle au milieu devient
+       une tache grise. Le degrade de couleur des barres dit deja le bareme. */
+    const ax = el('div', 'hist-ax', hist);
+    el('span', null, ax).textContent = '0';
+    el('span', null, ax).textContent = '10';
+
     const gA = el('div', 'gauge gauge-a', row);
     const gANum = el('div', 'gauge-n', gA);
     gANum.textContent = '–';
@@ -134,7 +153,7 @@ function construireLignes() {
     const gCTrack = el('div', 'gauge-track', gC);
     const gCFill = el('div', 'gauge-fill', gCTrack);
 
-    return { row, votes, dot, votesN, verdict, gA, gANum, gAFill, sweep, gCNum, gCFill };
+    return { row, votes, dot, votesN, verdict, hBars, gA, gANum, gAFill, sweep, gCNum, gCFill };
   });
 }
 
@@ -291,6 +310,12 @@ function peindreLignes() {
     d.gAFill.style.width = (aVide ? 0 : r.amina * 10) + '%';
     d.sweep.classList.toggle('on', active && r.amina == null);
 
+    /* Chaque batonnet est relatif au plus haut : avec 300 votants les hauteurs
+       absolues sortiraient de la ligne, et c'est la FORME qu'on veut lire. */
+    const dist = r.dist || [];
+    const haut = Math.max(1, ...dist);
+    d.hBars.forEach((f, n) => { f.style.height = ((dist[n] || 0) / haut * 100) + '%'; });
+
     /* Colonne de droite : la moyenne du chat, ou la note du viewer mis a
        l'antenne. Sa semaine se lit en entier, y compris sur les criteres pas
        encore joues - c'est tout l'interet de la montrer. */
@@ -342,14 +367,28 @@ function montrerMoyenneGenerale(on) {
 function peindreHof(type) {
   const hof = $('hof');
   const vw = S.viewers;
-  if (!vw.length) return;
+
+  hof.classList.toggle('best', type === 'best');
+  hof.classList.toggle('worst', type === 'worst');
+
+  /* Classement vide : personne n'a note tous les criteres. Ca peut arriver
+     sur un petit chat, et l'ecran doit le dire au lieu de garder celui
+     d'avant a l'antenne. */
+  if (!vw.length) {
+    const nc = (S.bilan && S.bilan.criteres) || S.criteres.length;
+    $('hofTitle').textContent = type === 'best' ? 'Meilleure semaine' : 'Pire semaine';
+    $('hofSub').textContent = `il fallait noter les ${nc} critères`;
+    $('hofNames').innerHTML = '';
+    el('div', 'hof-name', $('hofNames')).textContent = 'personne';
+    $('hofScore').innerHTML = '–<span class="hof-slash">/10</span>';
+    $('hofFoot').textContent = 'aucun viewer n’a noté toute sa semaine';
+    return;
+  }
 
   const best = vw.filter((v) => v.avg === vw[0].avg);
   const gagnants = type === 'best' ? best : [vw[vw.length - 1]];
   const noms = gagnants.slice(0, 3);
 
-  hof.classList.toggle('best', type === 'best');
-  hof.classList.toggle('worst', type === 'worst');
   $('hofTitle').textContent = type === 'best' ? 'Meilleure semaine' : 'Pire semaine';
   $('hofSub').textContent = type === 'best' ? 'Celui qui a kiffé sa semaine' : 'Celui qui a passé une semaine de merde';
 
@@ -368,7 +407,13 @@ function peindreHof(type) {
 
 function peindreClassement() {
   const vw = S.viewers;
-  $('rankSub').textContent = `${vw.length} viewer${vw.length > 1 ? 's' : ''} ont noté leur semaine`;
+  const b = S.bilan || {};
+  /* La regle du classement s'affiche : quelqu'un qui a vote et ne se voit pas
+     doit comprendre pourquoi plutot que de croire a un bug. */
+  const nc = b.criteres || S.criteres.length;
+  $('rankSub').textContent = vw.length
+    ? `${vw.length} classé${vw.length > 1 ? 's' : ''} sur ${b.participants} participants · il fallait noter les ${nc} critères`
+    : `personne n'a noté les ${nc} critères`;
 
   const pod = $('podium');
   pod.innerHTML = '';
@@ -657,7 +702,7 @@ function valider(index, note, tally) {
   clearTimers();
   S.scene = 's4';
   r.amina = note;
-  if (tally) { r.count = tally.count; r.avg = tally.avg; }
+  if (tally) { r.count = tally.count; r.avg = tally.avg; r.dist = tally.dist || []; }
 
   const ecart = Math.abs(note - r.avg);
   r.verdict = r.count === 0 ? 'le chat n’a pas voté' : ecart < 0.35 ? 'même avis !' : ecart >= 2.6 ? 'gros écart' : '';
@@ -719,6 +764,7 @@ function connecter() {
       // Le viewer a l'antenne fait partie de l'etat : une page rechargee en
       // pleine emission doit le retrouver, pas revenir au tableau global.
       S.focus = m.etat.focus || null;
+      S.bilan = m.etat.bilan || S.bilan;
       S.weekLabel = m.etat.weekLabel || '';
       construireScene();
       reprendre(m.etat);
@@ -728,6 +774,7 @@ function connecter() {
     // Toute la sequence est pilotee par les etapes envoyees par le serveur.
     if (m.t === 'etape') {
       S.weekLabel = m.weekLabel;
+      if (m.bilan) S.bilan = m.bilan;
       peindreEntete();
       if (m.viewers && m.viewers.length) S.viewers = m.viewers;
       if (m.id === 's1') S.rows = S.criteres.map(newRow);
@@ -736,6 +783,7 @@ function connecter() {
     }
     if (m.t === 'etat') {
       S.focus = m.etat.focus || null;
+      if (m.etat.bilan) S.bilan = m.etat.bilan;
       peindreEntete();
       peindreLignes();
       if (!m.etat.actif) go('idle');
@@ -767,7 +815,7 @@ function connecter() {
     if (m.t === 'tally') {
       bullesDeVote(m.votants);
       const r = S.rows[m.index];
-      if (r) { r.count = m.count; r.avg = m.avg; r.pulse = true; peindreLignes(); }
+      if (r) { r.count = m.count; r.avg = m.avg; r.dist = m.dist || []; r.pulse = true; peindreLignes(); }
       return;
     }
     if (m.t === 'chat') { pousserChat(m.messages); return; }
@@ -787,6 +835,7 @@ function reprendre(etat) {
     S.rows[i].count = r.count;
     S.rows[i].avg = r.avg;
     S.rows[i].disp = r.avg;
+    S.rows[i].dist = r.dist || [];
     S.rows[i].amina = r.amina;
   });
   S.viewers = etat.viewers || [];

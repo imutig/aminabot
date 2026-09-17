@@ -24,10 +24,6 @@ export const config = {
   // Le dernier message envoye remplace le vote precedent.
   minNote: 0,
   maxNote: 10,
-  // Nombre minimum de criteres notes pour apparaitre au classement.
-  // Evite qu'un viewer arrive au dernier critere, tape 10, et gagne la semaine.
-  // null = les trois quarts des criteres (6 sur 8).
-  minCriteresPourClasser: null,
 
   // ---- Pilotage ----
   // TOUT est manuel : rien n'avance sans une action. Le pilotage se fait depuis

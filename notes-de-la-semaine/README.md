@@ -124,6 +124,28 @@ sauvegarde). Supprime ce fichier pour revenir aux 8 critères de `config.js`.
 Un viewer peut se corriger : **son dernier message compte**, la moyenne peut donc
 baisser. Poser sa note ferme les votes du critère ; revenir dessus les rouvre.
 
+### Qui entre au classement
+
+**Seuls ceux qui ont noté TOUS les critères.** Comparer une moyenne sur huit
+notes à une moyenne sur deux n'a aucun sens : quelqu'un qui n'aurait noté que
+« les petits plaisirs » finirait devant tout le monde.
+
+L'écran du classement l'annonce, pour que quelqu'un qui a voté et ne se voit
+pas comprenne pourquoi au lieu de croire à un bug :
+
+> 27 classés sur 34 participants · il fallait noter les 8 critères
+
+Si personne n'a la semaine complète, les trois écrans de résultats le disent
+au lieu de rester sur l'image précédente.
+
+### La répartition des votes
+
+La ligne du critère en cours affiche **onze bâtonnets**, un par note, hauteur
+relative au plus haut. Une moyenne de `6.0` peut vouloir dire « tout le monde
+a mis 6 » ou « la moitié a mis 0 et l'autre 10 » : c'est la forme qui fait le
+moment à l'antenne, pas le chiffre. Les bâtonnets reprennent le dégradé du
+barème, donc la couleur dit déjà de quel côté penche le chat.
+
 ---
 
 ## Réglages
@@ -136,7 +158,6 @@ Tout est dans **`config.js`** :
 | `camPlaceholder` | `false` | Le rectangle « CAM ». Passe-le à `true` pour revoir le repérage |
 | `aminaName` | `'Amina'` | En-tête de la colonne de gauche |
 | `weekLabel` | `null` | `null` = calculé automatiquement (« Semaine du 24 → 30 juillet ») |
-| `minCriteresPourClasser` | `null` | `null` = les trois quarts des critères. Empêche qu'un viewer arrive au dernier critère, tape 10 et gagne la semaine |
 | `chiffreSeulPourAmina` | `true` | Un chiffre seul d'Amina = sa note. Mets `false` si elle veut `!note 7` |
 | `defilementMaxSec` | `40` | Plafond du défilement final (voir « Écarts » plus bas) |
 

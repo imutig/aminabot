@@ -2,8 +2,9 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Régie — Les notes de la semaine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#FF8FBF">
+<title>Régie des notes de la semaine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -11,109 +12,106 @@
 </head>
 <body>
 
-<div class="sky">
-  <svg class="cloud c1" viewBox="0 0 380 150"><g fill="#FFFFFF" opacity=".55"><rect x="26" y="94" width="330" height="48" rx="24"></rect><circle cx="92" cy="82" r="54"></circle><circle cx="176" cy="60" r="64"></circle><circle cx="264" cy="76" r="50"></circle><circle cx="322" cy="98" r="38"></circle><circle cx="48" cy="102" r="36"></circle></g></svg>
-  <svg class="cloud c2" viewBox="0 0 240 130"><g fill="#FFFFFF" opacity=".45"><rect x="22" y="76" width="196" height="46" rx="23"></rect><circle cx="72" cy="70" r="44"></circle><circle cx="132" cy="56" r="52"></circle><circle cx="186" cy="82" r="36"></circle><circle cx="42" cy="92" r="32"></circle></g></svg>
-</div>
+<!-- ============ Bandeau fige : ou on en est + les deux boutons de pilotage ============ -->
+<header class="tete">
+  <div class="etape-num" id="etapeNum">·</div>
 
-<main class="wrap">
+  <div class="tete-txt">
+    <div class="etape-label" id="etapeLabel">Au repos</div>
+    <div class="etape-suite">Ensuite : <b id="etapeSuite">lance le segment</b></div>
+  </div>
 
-  <header class="top">
-    <div class="brand">
-      <div class="brand-t">Régie</div>
-      <div class="brand-s">Les notes de la semaine</div>
-    </div>
-    <div class="lien" id="lien">connexion…</div>
-  </header>
+  <div class="lien" id="lien">connexion…</div>
 
-  <!-- ---- Étape en cours ---- -->
-  <section class="card etape-card">
-    <div class="etape-haut">
-      <div class="etape-num" id="etapeNum">—</div>
-      <div>
-        <div class="etape-quoi">Étape en cours</div>
-        <div class="etape-label" id="etapeLabel">Au repos</div>
-      </div>
-    </div>
-    <div class="etape-suite">Ensuite : <b id="etapeSuite">—</b></div>
-  </section>
-
-  <!-- ---- Précédent / Suivant ---- -->
-  <section class="nav">
-    <button class="big prev" id="btnPrev">
-      <span class="big-fleche">‹</span>
-      <span class="big-txt">Précédent</span>
+  <div class="pilote">
+    <button class="gros prev" id="btnPrev">
+      <span class="fleche">‹</span>
+      <span class="gros-txt">Précédent<small>flèche gauche</small></span>
     </button>
-    <button class="big next" id="btnNext">
-      <span class="big-txt">Suivant</span>
-      <span class="big-fleche">›</span>
+    <button class="gros next" id="btnNext">
+      <span class="gros-txt">Suivant<small>flèche droite</small></span>
+      <span class="fleche">›</span>
     </button>
-  </section>
+  </div>
+</header>
 
-  <!-- ---- Note d'Amina ---- -->
-  <section class="card notes-card" id="notesCard">
-    <div class="titre-ligne">
-      <div class="titre">Note d'<span id="nomAmina">Amina</span></div>
-      <div class="etat-vote" id="etatVote">—</div>
-    </div>
-    <div class="notes" id="notes"></div>
-    <button class="mini" id="btnAnnuler">Annuler la note et rouvrir les votes</button>
-  </section>
+<main class="corps">
 
-  <!-- ---- Le chat en direct ---- -->
-  <section class="card live-card" id="liveCard">
-    <div class="titre-ligne">
-      <div class="titre">Votes du chat</div>
-      <div class="chip" id="liveCount">0 vote</div>
-    </div>
-    <div class="live">
-      <div class="live-bloc">
-        <div class="live-l">Moyenne chat</div>
-        <div class="live-v" id="liveAvg">–</div>
+  <!-- ============ Rail de gauche : la carte du segment ============ -->
+  <aside class="rail">
+
+    <section class="carte">
+      <div class="carte-tete"><h2>Le déroulé</h2></div>
+      <div class="etapes" id="etapes"></div>
+      <p class="aide">Clique une étape pour y sauter directement.</p>
+    </section>
+
+    <section class="carte">
+      <div class="carte-tete"><h2>Le segment</h2></div>
+      <div class="actions">
+        <button class="act act-go" id="btnStart">Lancer le segment</button>
+        <button class="act" id="btnStop">Arrêter</button>
+        <button class="act act-danger" id="btnReset">Tout remettre à zéro</button>
       </div>
-      <div class="live-bloc">
-        <div class="live-l">Note d'Amina</div>
-        <div class="live-v rose" id="liveAmina">–</div>
+      <p class="aide">« Tout remettre à zéro » efface aussi les votes déjà reçus.</p>
+    </section>
+
+  </aside>
+
+  <!-- ============ Zone de travail ============ -->
+  <div class="travail">
+
+    <!-- ---------------- La note d'Amina ---------------- -->
+    <section class="carte zone-note" id="notesCard">
+      <div class="carte-tete">
+        <h2>Note d'<span id="nomAmina">Amina</span></h2>
+        <div class="etat" id="etatVote">en veille</div>
       </div>
-    </div>
-  </section>
-
-  <!-- ---- Aller directement à ---- -->
-  <section class="card">
-    <div class="titre">Aller directement à</div>
-    <div class="etapes" id="etapes"></div>
-  </section>
-
-  <!-- ---- Critères ---- -->
-  <section class="card">
-    <div class="titre-ligne">
-      <div class="titre">Les critères</div>
-      <div class="chip" id="critNb">—</div>
-    </div>
-    <div class="verrou off" id="critVerrou">Segment en cours — arrête-le pour modifier les critères.</div>
-    <div class="crit-liste" id="critListe"></div>
-    <button class="mini" id="critAjout">+ Ajouter un critère</button>
-    <div class="crit-pied">
-      <div class="crit-etat" id="critEtat"></div>
-      <div class="crit-btns">
-        <button class="act" id="critAnnuler">Annuler</button>
-        <button class="act act-go" id="critSauver">Enregistrer</button>
+      <div class="notes" id="notes"></div>
+      <div class="note-pied">
+        <button class="mini" id="btnAnnuler">Annuler la note et rouvrir les votes</button>
+        <span class="aide aide-inline">Les touches 0 à 9 du clavier notent aussi, A pour 10.</span>
       </div>
-    </div>
-    <div class="aide">Le coefficient pondère le critère dans la moyenne générale et dans le classement des viewers. ×1 = poids normal.</div>
-  </section>
+    </section>
 
-  <!-- ---- Segment ---- -->
-  <section class="card">
-    <div class="titre">Le segment</div>
-    <div class="actions">
-      <button class="act act-go" id="btnStart">Lancer le segment</button>
-      <button class="act" id="btnStop">Arrêter</button>
-      <button class="act act-danger" id="btnReset">Tout remettre à zéro</button>
-    </div>
-    <div class="aide">« Tout remettre à zéro » efface aussi les votes déjà reçus.</div>
-  </section>
+    <!-- ---------------- Ce que fait le tchat ---------------- -->
+    <section class="carte zone-live" id="liveCard">
+      <div class="carte-tete">
+        <h2>Le tchat</h2>
+        <div class="puce" id="liveCount">0 vote</div>
+      </div>
+      <div class="live">
+        <div class="live-bloc">
+          <div class="live-l">Moyenne chat</div>
+          <div class="live-v" id="liveAvg">–</div>
+        </div>
+        <div class="live-bloc">
+          <div class="live-l">Note d'Amina</div>
+          <div class="live-v rose" id="liveAmina">–</div>
+        </div>
+      </div>
+    </section>
 
+    <!-- ---------------- Les criteres ---------------- -->
+    <section class="carte zone-crit">
+      <div class="carte-tete">
+        <h2>Les critères</h2>
+        <div class="puce" id="critNb">0 critère</div>
+      </div>
+      <div class="verrou off" id="critVerrou">Segment en cours : arrête-le pour modifier les critères.</div>
+      <div class="crit-liste" id="critListe"></div>
+      <button class="mini" id="critAjout">+ Ajouter un critère</button>
+      <div class="crit-pied">
+        <p class="aide">Le coefficient pondère le critère dans la moyenne générale et dans le classement. ×1 = poids normal.</p>
+        <div class="crit-etat" id="critEtat"></div>
+        <div class="crit-btns">
+          <button class="act" id="critAnnuler">Annuler</button>
+          <button class="act act-go" id="critSauver">Enregistrer</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
 </main>
 
 <script type="module" src="./control.js"></script>

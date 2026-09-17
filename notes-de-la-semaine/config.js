@@ -72,7 +72,7 @@ export const CRITERES = [
 
 const MOIS = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'];
 
-// « Semaine du 24 → 30 juillet » — calcule sur la semaine qui vient de s'ecouler.
+// « Semaine du 24 → 30 juillet » - calcule sur la semaine qui vient de s'ecouler.
 export function libelleSemaine(date = new Date()) {
   const fin = new Date(date);
   const debut = new Date(date);

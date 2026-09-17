@@ -246,7 +246,7 @@ function grilleReponses(grille, etat, neuf) {
 
          Surtout PAS un animation-delay en style en ligne sur le bandeau : le
          reflet vit sur ::after, et le style en ligne l'emportait sur la feuille
-         de style au moment de l'ouverture — il retardait la levee du bandeau de
+         de style au moment de l'ouverture - il retardait la levee du bandeau de
          plusieurs secondes, variable selon la position de la case. */
       bandeau.style.setProperty('--reflet-retard', `${((i * 2.3) % 9).toFixed(1)}s`);
     });

@@ -19,7 +19,7 @@ const el = (tag, cls, parent, txt) => {
 const MIN_REPONSES = 4, MAX_REPONSES = 10;
 
 /* Bareme par defaut d'une question : la premiere reponse vaut le plus, et ca
-   descend. Evite d'avoir a saisir des points a chaque ligne — ils restent
+   descend. Evite d'avoir a saisir des points a chaque ligne - ils restent
    modifiables un par un. */
 const BAREME = [8, 6, 5, 4, 3, 2, 2, 1, 1, 1];
 

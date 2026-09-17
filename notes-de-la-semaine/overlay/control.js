@@ -19,6 +19,8 @@ const cmd = (act, extra = {}) => envoyer({ t: 'cmd', act, ...extra });
 
 // ---------------------------------------------------------------- rendu
 
+let dernierPasVu = null;
+
 function etapeCourante() {
   const e = S.etat;
   return e && e.actif && e.pas >= 0 ? S.etapes[e.pas] : null;
@@ -30,7 +32,7 @@ function peindre() {
   const cur = etapeCourante();
   const suite = actif && etat.pas + 1 < S.etapes.length ? S.etapes[etat.pas + 1] : null;
 
-  $('etapeNum').textContent = cur ? cur.court : '—';
+  $('etapeNum').textContent = cur ? cur.court : '·';
   $('etapeLabel').textContent = cur ? cur.label : 'Au repos';
   $('etapeSuite').textContent = suite ? suite.label : actif ? 'fin de la séquence' : 'lance le segment';
 
@@ -48,7 +50,7 @@ function peindre() {
     b.classList.toggle('on', row && row.amina === Number(b.dataset.n));
   });
   $('btnAnnuler').disabled = !row || row.amina == null;
-  $('etatVote').textContent = !surCritere ? '—'
+  $('etatVote').textContent = !surCritere ? 'en veille'
     : row && row.amina != null ? 'notée · votes fermés' : 'en attente de sa note';
 
   const t = surCritere ? (S.tallies[i] || { count: row?.count || 0, avg: row?.avg || 0 }) : null;
@@ -61,6 +63,16 @@ function peindre() {
     b.classList.toggle('on', actif && p === etat.pas);
     b.classList.toggle('faite', actif && p < etat.pas);
   });
+
+  /* La liste des etapes defile toute seule : avec huit criteres elle depasse
+     sa boite, et l'etape en cours doit rester visible sans y toucher.
+     On ne le fait qu'au changement, sinon chaque vote du chat relancerait
+     le defilement. */
+  if (actif && etat.pas !== dernierPasVu) {
+    dernierPasVu = etat.pas;
+    document.querySelector('.et.on')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+  if (!actif) dernierPasVu = null;
 
   // Les criteres ne se modifient pas pendant un segment : les votes deja
   // recus n'auraient plus de sens.
@@ -156,7 +168,7 @@ function connecter() {
 
   ws.onopen = () => { $('lien').textContent = 'connectée'; $('lien').classList.remove('ko'); };
   ws.onclose = () => {
-    $('lien').textContent = 'déconnectée — reconnexion…';
+    $('lien').textContent = 'déconnectée, reconnexion…';
     $('lien').classList.add('ko');
     setTimeout(connecter, 1500);
   };

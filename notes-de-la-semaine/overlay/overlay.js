@@ -20,7 +20,7 @@ function pathFestonne(w, h, nx, ny, rx, ry) {
 }
 
 // La cam occupe TOUTE la partie gauche : de 22 a 1058 en hauteur (festons
-// compris), de 17 a 1103 en largeur. Rapport 1040/990 ≈ 1:1 — une webcam 16:9
+// compris), de 17 a 1103 en largeur. Rapport 1040/990 ≈ 1:1 - une webcam 16:9
 // doit etre recadree, mais un 1080p recadre donne 1134x1080, soit plus que la
 // taille d'affichage : aucune perte de qualite.
 const CAM_W = 1040, CAM_H = 990;
@@ -214,7 +214,7 @@ function moyennePonderee(valeur, garde) {
     somme += valeur(r) * c;
     poids += c;
   });
-  return poids ? (somme / poids).toFixed(1) : '—';
+  return poids ? (somme / poids).toFixed(1) : '–';
 }
 const moyenneAmina = () => moyennePonderee((r) => r.amina, (r) => r.amina != null);
 const moyenneChat = () => moyennePonderee((r) => r.avg, (r) => r.count > 0);
@@ -256,7 +256,7 @@ function peindreHof(type) {
   box.classList.toggle('multi', noms.length > 1);
   noms.forEach((v) => { el('div', 'hof-name', box).textContent = trunc(v.name, 15); });
 
-  $('hofScore').innerHTML = (gagnants[0] ? gagnants[0].avg.toFixed(1) : '—') + '<span class="hof-slash">/10</span>';
+  $('hofScore').innerHTML = (gagnants[0] ? gagnants[0].avg.toFixed(1) : '–') + '<span class="hof-slash">/10</span>';
 }
 
 function peindreClassement() {

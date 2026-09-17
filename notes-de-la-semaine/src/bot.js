@@ -65,7 +65,7 @@ export function demarrerBot(session, { onLog, onChat, onChatSupprime } = {}) {
   };
 
   client.on('connected', (addr, port) => {
-    log(`Bot connecte sur ${addr}:${port} — chaine #${channel}`);
+    log(`Bot connecte sur ${addr}:${port} - chaine #${channel}`);
   });
 
   client.on('message', (chan, tags, message, self) => {

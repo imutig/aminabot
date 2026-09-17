@@ -1,5 +1,5 @@
 /* ============================================================
-   « Les notes de la semaine » — overlay OBS 1920x1080
+   « Les notes de la semaine » - overlay OBS 1920x1080
    Valeurs issues du handoff design (hifi). Ne pas ajuster a l'oeil.
    ============================================================ */
 
@@ -449,7 +449,7 @@ html, body {
 }
 .feed.in { opacity: 1; transform: translateY(0); }
 /* Pendant le segment : replie sous ce qui occupe la colonne. Cale sur le cas
-   le plus haut, le classement (S8), qui descend a 870 — le tableau, lui,
+   le plus haut, le classement (S8), qui descend a 870 - le tableau, lui,
    s'arrete a 857 avec la ligne active agrandie. */
 .feed.compact { top: 890px; height: 166px; }
 /* Au calcul (S5) la ligne « Moyenne generale » allonge le panneau jusqu'a 923 :

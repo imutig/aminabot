@@ -25,7 +25,7 @@ npm run notes        # depuis la racine du dépôt
 Puis dans OBS : **Source → Navigateur**, URL `http://localhost:4747`, taille **1920 × 1080**.
 
 Décoche **« Éteindre la source quand elle n'est pas visible »** et
-**« Rafraîchir le navigateur quand la scène devient active »** — sinon l'overlay
+**« Rafraîchir le navigateur quand la scène devient active »** - sinon l'overlay
 repart de zéro en plein segment.
 
 Place la source **webcam sous l'overlay**, cadrée dans la découpe festonnée.
@@ -34,14 +34,14 @@ soit de x 17 à 1103 et de y 22 à 1058 festons compris.
 
 ### Recadrer la webcam
 
-La découpe fait **1040 × 990**, soit un rapport quasi carré — une webcam 16:9
+La découpe fait **1040 × 990**, soit un rapport quasi carré - une webcam 16:9
 doit donc être rognée sur les côtés. Dans OBS : clic droit sur la source webcam →
 `Filtres` → `+` → `Rogner/Compléter`, et enlève **393 px à gauche et 393 px à
 droite** (sur une cam 1920 × 1080). Il reste 1134 × 1080, qui se réduit
 exactement à 1040 × 990 : **aucune perte de qualité**.
 
 Autre solution si tu préfères ne rien rogner : garde le 16:9 et laisse la cam
-déborder derrière l'overlay — seule la partie dans la découpe sera visible.
+déborder derrière l'overlay - seule la partie dans la découpe sera visible.
 
 Le rappel « tape un chiffre de 0 à 10 » et la barre de calcul se **superposent
 en bas de la cam** (à partir de y 920), façon lower third.
@@ -58,22 +58,22 @@ régler le placement dans OBS.
 
 ---
 
-## La télécommande — `http://localhost:4747/control`
+## La télécommande - `http://localhost:4747/control`
 
 **Rien n'avance tout seul.** Toute la séquence est pilotée depuis cette page,
-à ouvrir sur un second écran ou sur ton téléphone (même wifi : remplace
-`localhost` par l'IP du PC).
+à ouvrir sur un second écran (ou sur le téléphone en dépannage : même wifi,
+remplace `localhost` par l'IP du PC).
 
-Elle donne :
+Elle tient en un écran, sans défiler :
 
-- **Précédent / Suivant** — les deux gros boutons, c'est 90 % de l'usage
-- **L'étape en cours** et ce qui vient après
-- **La note d'Amina** : une grille 0 → 10. Un bouton « Annuler la note »
-  rouvre les votes si elle s'est trompée
-- **Le direct** : nombre de votes et moyenne du chat sur le critère en cours
-- **Aller directement à** n'importe quelle étape
-- **Les critères** : renommer, ajouter, supprimer, régler les **coefficients**
-- **Lancer / Arrêter / Remettre à zéro**
+- **en haut**, l'étape en cours, ce qui vient après, l'état de la connexion, et
+  **Précédent / Suivant** : les deux gros boutons, c'est 90 % de l'usage
+- **à gauche**, le **déroulé** complet pour sauter directement à une étape
+  (l'étape en cours se met en évidence toute seule), et **Lancer / Arrêter /
+  Remettre à zéro**
+- **à droite**, la **note d'Amina** sur une ligne de 0 à 10 avec « Annuler la
+  note » pour rouvrir les votes, le **direct** du chat (nombre de votes et
+  moyenne sur le critère en cours), et l'éditeur de **critères**
 
 Raccourcis clavier sur la page : `←` `→` pour naviguer, `0`–`9` et `A` (=10)
 pour la note d'Amina.
@@ -81,7 +81,7 @@ pour la note d'Amina.
 ### Les critères et leurs coefficients
 
 Modifiables depuis la télécommande, hors segment uniquement (changer les
-critères en plein vote invaliderait les votes déjà reçus — la page se verrouille
+critères en plein vote invaliderait les votes déjà reçus - la page se verrouille
 toute seule).
 
 Le **coefficient** (×0,5 à ×5) pondère le critère dans la moyenne générale
@@ -191,7 +191,7 @@ résultats (il ne recouvre rien : le classement s'arrête à 838, le chat commen
 
 Quand un message est un chiffre seul et qu'un critère est ouvert, il s'affiche
 comme une **pastille de note colorée** selon le barème plutôt que comme du
-texte — on voit d'un coup d'œil les votes passer au milieu de la conversation.
+texte - on voit d'un coup d'œil les votes passer au milieu de la conversation.
 
 **La modération suit** : un message supprimé, un viewer timeout ou banni, ou un
 `/clear` retirent les lignes correspondantes de l'overlay. Sans ça un message
@@ -227,5 +227,5 @@ intégré aux keyframes de `breathe` pour que les deux coexistent.
   dans `.env`.
 - **Les polices viennent de Google Fonts.** Si OBS démarre sans réseau, le
   rendu se dégrade. Pour blinder ça il faudrait héberger Baloo 2 et Nunito en
-  local (`@font-face` + woff2) — pas fait pour l'instant.
+  local (`@font-face` + woff2) - pas fait pour l'instant.
 - **Le compte du bot doit pouvoir parler** dans le chat (mode abonnés/followers).

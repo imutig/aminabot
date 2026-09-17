@@ -11,7 +11,7 @@ const session = new Session();
 const serveur = demarrerServeur(session, { onLog: log });
 
 if (DEMO) {
-  log('MODE DEMO — aucun Twitch, le chat et les votes sont simules.');
+  log('MODE DEMO - aucun Twitch, le chat et les votes sont simules.');
   demarrerDemo(session, { onLog: log, onChat: serveur.chat });
 } else {
   try {

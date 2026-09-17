@@ -147,15 +147,14 @@ Deuxième service Railway, **dans le même projet et depuis le même dépôt**.
 
    Laisse le *Root Directory* à la racine : Notes importe `bot/token.js`, qui
    vit au niveau du dépôt.
-3. **Variables** (il n'a pas besoin de Convex) :
+3. **Variables** : les deux jeux utilisent **le même compte de bot**, donc les
+   mêmes valeurs. Plutôt que de les recopier, définis-les une fois pour tout le
+   projet : **Project Settings** → **Shared Variables** → ajoute `BOT_USERNAME`,
+   `CHANNEL`, `TWITCH_CLIENT_ID`, `TWITCH_CLIENT_SECRET`, `TWITCH_REFRESH_TOKEN`,
+   puis dans chaque service coche-les pour les importer.
 
-   ```
-   BOT_USERNAME=<le compte du bot>
-   CHANNEL=saysayouu
-   TWITCH_CLIENT_ID=<le tien>
-   TWITCH_CLIENT_SECRET=<le tien>
-   TWITCH_REFRESH_TOKEN=<le même que l'autre service>
-   ```
+   Comme ça, le jour où tu régénères le jeton, tu le changes à **un seul
+   endroit**. Notes n'a pas besoin des variables Convex.
 4. **Settings** → **Networking** → **Generate Domain**.
 
 Le port est fourni par Railway et lu automatiquement.

@@ -1,5 +1,4 @@
 import http from 'node:http';
-import { spawn } from 'node:child_process';
 
 /* Obtient un refresh token Twitch pour TON application.
 
@@ -76,6 +75,18 @@ const serveur = http.createServer(async (req, res) => {
   const url = new URL(req.url, REDIRECTION);
   const code = url.searchParams.get('code');
 
+  /* Pas encore de code : on renvoie vers Twitch nous-memes.
+
+     C'est la raison d'etre de cette redirection : le lien d'autorisation est
+     tres long, et le copier depuis un terminal le tronque facilement - Twitch
+     repond alors « missing response type ». Ici il suffit d'ouvrir
+     http://localhost:3000, court et increvable. */
+  if (!code && !url.searchParams.has('error')) {
+    res.writeHead(302, { Location: lien });
+    res.end();
+    return;
+  }
+
   if (!code) {
     const err = url.searchParams.get('error_description') || 'aucun code reçu';
     res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -134,16 +145,15 @@ const serveur = http.createServer(async (req, res) => {
 
 serveur.listen(PORT, () => {
   console.log(`
-  Le jeton appartiendra au compte deja connecte a Twitch dans le navigateur.
+  Ouvre cette adresse dans une FENETRE DE NAVIGATION PRIVEE :
 
-  Si c'est un AUTRE compte (ton compte principal, un ancien bot), ouvre le lien
-  dans une FENETRE DE NAVIGATION PRIVEE et connecte-toi avec le compte du bot.
-  Sinon tu obtiendras un jeton pour le mauvais compte, et Twitch refusera la
+      ${REDIRECTION}
+
+  Connecte-toi avec le compte du BOT. Le jeton appartiendra au compte connecte
+  dans cette fenetre : si c'est ton compte principal, Twitch refusera ensuite la
   connexion au tchat.
 `);
-  console.log('  ' + lien + '\n');
-  // Ouvre le navigateur si l'OS le permet ; sinon le lien ci-dessus suffit.
-  const cmd = process.platform === 'win32' ? ['cmd', ['/c', 'start', '', lien]]
-    : process.platform === 'darwin' ? ['open', [lien]] : ['xdg-open', [lien]];
-  try { spawn(cmd[0], cmd[1], { detached: true, stdio: 'ignore' }).unref(); } catch { /* pas grave */ }
+  // Volontairement PAS d'ouverture automatique : elle utiliserait le
+  // navigateur par defaut, ou c'est souvent le compte principal qui est
+  // connecte - et le jeton finirait sur le mauvais compte.
 });

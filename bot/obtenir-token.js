@@ -1,4 +1,25 @@
 import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const FICHIER_ENV = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '.env');
+
+/* Ecrit la valeur dans .env, en remplacant la ligne existante.
+
+   Le script ecrit lui-meme plutot que d'afficher a recopier : un jeton recopie
+   a la main depuis un terminal perd facilement un caractere, et Twitch repond
+   alors « Invalid refresh token » sans dire que la valeur est tronquee. */
+function ecrireDansEnv(cles) {
+  let lignes = [];
+  try { lignes = fs.readFileSync(FICHIER_ENV, 'utf8').split(/\r?\n/); } catch { /* fichier neuf */ }
+  for (const [k, v] of Object.entries(cles)) {
+    const i = lignes.findIndex((l) => l.startsWith(`${k}=`));
+    if (i >= 0) lignes[i] = `${k}=${v}`;
+    else lignes.push(`${k}=${v}`);
+  }
+  fs.writeFileSync(FICHIER_ENV, lignes.join('\n').replace(/\n+$/, '') + '\n', 'utf8');
+}
 
 /* Obtient un refresh token Twitch pour TON application.
 
@@ -128,13 +149,31 @@ const serveur = http.createServer(async (req, res) => {
       console.log(`  -> BOT_USERNAME doit valoir exactement : ${login}`);
     }
 
-    console.log('\n  ✓ Jeton obtenu. A reporter A LA FOIS dans .env et dans Railway :\n');
-    console.log(`  TWITCH_CLIENT_ID     = ${ID}`);
-    console.log(`  TWITCH_CLIENT_SECRET = ${SECRET}`);
+    const aEcrire = { TWITCH_REFRESH_TOKEN: d.refresh_token };
+    if (login) aEcrire.BOT_USERNAME = login;
+    ecrireDansEnv(aEcrire);
+    console.log(`\n  ✓ .env mis a jour (${d.refresh_token.length} caracteres ecrits).`);
+
+    /* Verification immediate : on relit le .env et on demande un renouvellement
+       avec ce qui y est reellement stocke. Si ca passe ici, ca passera au
+       demarrage du bot. */
+    const relu = fs.readFileSync(FICHIER_ENV, 'utf8')
+      .split(/\r?\n/).find((l) => l.startsWith('TWITCH_REFRESH_TOKEN='))?.slice(21) ?? '';
+    const test = await fetch('https://id.twitch.tv/oauth2/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token', refresh_token: relu, client_id: ID, client_secret: SECRET
+      })
+    });
+    console.log(test.ok
+      ? '  ✓ Verifie : le jeton enregistre fonctionne.'
+      : `  ⚠ Le jeton enregistre est refuse (${test.status}). Relance le script.`);
+
+    console.log('\n  A copier dans les Shared Variables de Railway :\n');
+    console.log(`  BOT_USERNAME         = ${login ?? '<le compte ci-dessus>'}`);
     console.log(`  TWITCH_REFRESH_TOKEN = ${d.refresh_token}\n`);
-    console.log(`  BOT_USERNAME         = ${login ?? '<le compte affiché ci-dessus>'}\n`);
-    console.log('  Le MEME jeton doit servir en local ET sur Railway : relancer ce');
-    console.log('  script invalide le precedent chez Twitch.\n');
+    console.log('  Copie-le en entier : il fait exactement ' + d.refresh_token.length + ' caracteres.\n');
   } catch (e) {
     res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(`<h1>Échec</h1><p>${e.message}</p>`);

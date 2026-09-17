@@ -115,7 +115,14 @@ const serveur = http.createServer(async (req, res) => {
 });
 
 serveur.listen(PORT, () => {
-  console.log('\n  Connecte-toi avec le compte du BOT (pas ton compte principal) :\n');
+  console.log(`
+  Le jeton appartiendra au compte deja connecte a Twitch dans le navigateur.
+
+  Si c'est un AUTRE compte (ton compte principal, un ancien bot), ouvre le lien
+  dans une FENETRE DE NAVIGATION PRIVEE et connecte-toi avec le compte du bot.
+  Sinon tu obtiendras un jeton pour le mauvais compte, et Twitch refusera la
+  connexion au tchat.
+`);
   console.log('  ' + lien + '\n');
   // Ouvre le navigateur si l'OS le permet ; sinon le lien ci-dessus suffit.
   const cmd = process.platform === 'win32' ? ['cmd', ['/c', 'start', '', lien]]

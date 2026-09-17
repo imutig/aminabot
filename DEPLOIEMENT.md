@@ -134,6 +134,39 @@ Deux possibilités :
 
 ---
 
+## Héberger aussi Les notes de la semaine
+
+Deuxième service Railway, **dans le même projet et depuis le même dépôt**.
+
+1. Dans le projet Railway : **New** → **GitHub Repo** → `imutig/aminabot`.
+2. Service → **Settings** → **Deploy** → **Custom Start Command** :
+
+   ```
+   npm run notes
+   ```
+
+   Laisse le *Root Directory* à la racine : Notes importe `bot/token.js`, qui
+   vit au niveau du dépôt.
+3. **Variables** (il n'a pas besoin de Convex) :
+
+   ```
+   BOT_USERNAME=<le compte du bot>
+   CHANNEL=saysayouu
+   TWITCH_CLIENT_ID=<le tien>
+   TWITCH_CLIENT_SECRET=<le tien>
+   TWITCH_REFRESH_TOKEN=<le même que l'autre service>
+   ```
+4. **Settings** → **Networking** → **Generate Domain**.
+
+Le port est fourni par Railway et lu automatiquement.
+
+⚠️ **Les deux bots lisent le même tchat en permanence.** Ce n'est gênant que si
+tu lances un segment des deux jeux en même temps : un « 7 » compterait alors à
+la fois comme un vote et comme une réponse. En pratique tu joues à un jeu à la
+fois, donc il suffit de ne pas ouvrir les deux segments simultanément.
+
+---
+
 ## Une fois en ligne
 
 Dans OBS, remplace `http://localhost:5178/` par ton URL Railway :

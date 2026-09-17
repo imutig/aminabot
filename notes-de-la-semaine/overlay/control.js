@@ -149,7 +149,10 @@ function reinitCriteres() {
 // ---------------------------------------------------------------- WebSocket
 
 function connecter() {
-  ws = new WebSocket(`ws://${location.host}`);
+  // wss:// quand la page est servie en HTTPS : un navigateur refuse une
+  // connexion ws:// non chiffree depuis une page securisee.
+  const protocole = location.protocol === 'https:' ? 'wss' : 'ws';
+  ws = new WebSocket(`${protocole}://${location.host}`);
 
   ws.onopen = () => { $('lien').textContent = 'connectée'; $('lien').classList.remove('ko'); };
   ws.onclose = () => {

@@ -3,7 +3,8 @@
 
 export const config = {
   // ---- Serveur ----
-  port: 4747,
+  // En local 4747 ; en ligne, l'hebergeur impose son port via PORT.
+  port: Number(process.env.PORT) || 4747,
 
   // ---- Scene ----
   // Cote ou se trouve la fenetre cam dans l'overlay : 'gauche' ou 'droite'.

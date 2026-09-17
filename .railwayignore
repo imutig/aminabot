@@ -1,5 +1,4 @@
 # Inutile en production — allege le televersement.
-notes-de-la-semaine/
 design/
 dist/
 *.log

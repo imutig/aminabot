@@ -45,6 +45,7 @@ export class Session extends EventEmitter {
     this.actif = false;      // le segment est-il a l'antenne
     this.pas = -1;           // index dans this.etapes, -1 = au repos
     this.activeIndex = -1;   // critere ouvert au vote, -1 = aucun
+    this.focusId = null;     // viewer dont la semaine est a l'antenne
     this.weekLabel = config.weekLabel || libelleSemaine();
     this.rows = this.criteres.map(() => ({ votes: new Map(), amina: null, locked: false }));
     this.viewers = [];
@@ -158,6 +159,63 @@ export class Session extends EventEmitter {
     return { index: i, count, avg: count ? sum / count : 0 };
   }
 
+  // ---- Participants ----
+
+  /* La semaine de chaque votant, critere par critere.
+
+     Recalcule a la demande plutot que maintenu : les votes changent en
+     permanence pendant un critere, et un miroir a jour serait une source de
+     bugs pour une liste qu'on ne regarde que par moments. */
+  participants() {
+    const m = new Map();
+    this.rows.forEach((row, i) => {
+      const coef = this.criteres[i].coef ?? 1;
+      for (const [id, v] of row.votes) {
+        let e = m.get(id);
+        if (!e) {
+          e = { id, name: v.name, notes: this.rows.map(() => null), sum: 0, poids: 0, n: 0 };
+          m.set(id, e);
+        }
+        e.name = v.name;
+        e.notes[i] = v.note;
+        e.sum += v.note * coef;
+        e.poids += coef;
+        e.n += 1;
+      }
+    });
+    return [...m.values()]
+      .map((e) => ({
+        id: e.id,
+        name: e.name,
+        notes: e.notes,
+        n: e.n,
+        avg: e.poids ? Math.round((e.sum / e.poids) * 10) / 10 : 0
+      }))
+      // Les plus assidus en haut : ce sont eux qu'on veut montrer a l'antenne.
+      .sort((a, b) => b.n - a.n || b.avg - a.avg || a.name.localeCompare(b.name));
+  }
+
+  // Met la semaine d'un viewer a l'antenne, a la place des moyennes du chat.
+  // id vide = retour au tableau global.
+  montrerViewer(id) {
+    if (!id) {
+      this.focusId = null;
+      this.emit('focus', { viewer: null });
+      return true;
+    }
+    const p = this.participants().find((x) => x.id === id);
+    if (!p) return false;
+    this.focusId = id;
+    this.emit('focus', { viewer: p });
+    return true;
+  }
+
+  // Le viewer a l'antenne, recalcule : ses notes ont pu bouger depuis le clic.
+  focusActuel() {
+    if (!this.focusId) return null;
+    return this.participants().find((x) => x.id === this.focusId) || null;
+  }
+
   // ---- Classement ----
 
   // Moyenne de chaque viewer sur SES notes, ponderee par le coefficient
@@ -210,6 +268,9 @@ export class Session extends EventEmitter {
       etapeId: this.pas >= 0 ? this.etapes[this.pas].id : null,
       activeIndex: this.activeIndex,
       weekLabel: this.weekLabel,
+      // Un overlay qui se recharge en pleine emission doit retrouver la
+      // semaine du viewer qui etait affichee.
+      focus: this.focusActuel(),
       rows: this.rows.map((r, i) => {
         const t = this.tally(i);
         return { count: t.count, avg: t.avg, amina: r.amina, locked: r.locked };

@@ -152,6 +152,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .colonne { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
 .colonne-rail { flex: none; width: 320px; }
 .colonne-large { flex: 1 1 auto; min-width: 0; }
+.colonne-gens { flex: none; width: 300px; }
 
 /* ================= Panneaux ================= */
 
@@ -364,9 +365,68 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ================= Fenetre etroite ================= */
 
+/* ================= Les participants ================= */
+
+.gens-barre {
+  flex: none;
+  display: flex; gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--trait-2);
+}
+.gens-q {
+  flex: 1 1 auto; min-width: 0;
+  height: 34px; padding: 0 11px;
+  border: 1px solid var(--trait-1); border-radius: 9px;
+  background: var(--creux);
+  font-family: inherit; font-size: 13px; font-weight: 700; color: var(--encre);
+}
+.gens-q:focus { outline: none; background: var(--panneau); border-color: var(--rose-trait); }
+.gens-barre .bt { height: 34px; padding: 0 12px; font-size: 12.5px; }
+
+.tab-gens { gap: 8px; }
+.g-nom, .gens-nom { flex: 1 1 auto; min-width: 0; }
+.g-n,   .gens-n   { flex: none; width: 42px; text-align: right; }
+.g-moy, .gens-moy { flex: none; width: 40px; text-align: right; }
+
+.gens {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; height: 40px; padding: 0 14px;
+  border: none; border-bottom: 1px solid var(--trait-3);
+  background: transparent;
+  font-size: 13.5px; font-weight: 700; text-align: left; color: var(--encre);
+}
+.gens:last-child { border-bottom: none; }
+.gens:hover { background: var(--survol); }
+.gens-nom { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gens-n, .gens-moy { font-weight: 800; font-variant-numeric: tabular-nums; color: var(--encre-faible); font-size: 12.5px; }
+.gens-moy { color: var(--bleu); font-size: 13px; }
+
+/* Celui qui est a l'antenne : le meme rose que la ligne du critere en cours,
+   pour qu'on sache d'un coup d'oeil ce que le public voit. */
+.gens.on { background: var(--rose-clair); color: var(--rose-fonce); font-weight: 900; }
+.gens.on .gens-moy, .gens.on .gens-n { color: var(--rose); }
+.gens.on::after { content: 'à l9 antenne'; flex: none; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .4px; color: var(--rose); }
+
+.gens-vide {
+  padding: 18px 14px;
+  font-size: 12.5px; font-weight: 700; color: var(--encre-faible); text-align: center;
+}
+.gens-aide {
+  flex: none; margin: 0;
+  padding: 10px 14px;
+  border-top: 1px solid var(--trait-2); background: var(--creux);
+  font-size: 11.5px; font-weight: 600; color: var(--encre-faible); line-height: 1.4;
+}
+#gensRetour.chaud { background: var(--rose); border-color: var(--rose); color: #fff; }
+
+@media (max-width: 1500px) {
+  /* Plus la place pour trois colonnes : les participants passent sous le
+     tableau, dans la colonne principale. */
+  .colonne-gens { width: 260px; }
+}
 @media (max-width: 1100px) {
   .corps { flex-direction: column; overflow-y: auto; }
-  .colonne-rail { width: auto; }
+  .colonne-rail, .colonne-gens { width: auto; }
   .panneau-extensible { flex: none; }
   .liste { max-height: 320px; }
   /* Les colonnes de resultat passent a la trappe : le nom et le coefficient

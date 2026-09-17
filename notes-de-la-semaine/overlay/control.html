@@ -129,6 +129,27 @@
 
     </div>
 
+    <!-- --------- Colonne de droite : qui a vote --------- -->
+    <div class="colonne colonne-gens">
+      <section class="panneau panneau-extensible">
+        <div class="pan-tete">
+          <span class="pan-titre">Les participants</span>
+          <span class="pan-etat" id="gensNb">0</span>
+        </div>
+        <div class="gens-barre">
+          <input class="gens-q" id="gensQ" type="search" placeholder="Chercher un pseudo" autocomplete="off">
+          <button class="bt" id="gensRetour" title="Revenir au tableau global">Tableau</button>
+        </div>
+        <div class="tab-tete tab-gens">
+          <span class="g-nom">Pseudo</span>
+          <span class="g-n">Notes</span>
+          <span class="g-moy">Moy.</span>
+        </div>
+        <div class="liste" id="gensListe"></div>
+        <p class="gens-aide" id="gensAide">Clique un pseudo pour mettre sa semaine à l'antenne, à la place des moyennes du chat.</p>
+      </section>
+    </div>
+
   </main>
 </div>
 

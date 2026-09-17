@@ -51,6 +51,9 @@ const S = {
   rows: [],
   viewers: [],
   active: -1,
+  // Viewer dont la semaine remplace les moyennes du chat, ou null.
+  focus: null,
+  weekLabel: '',
   timers: [],
   calcRun: false,
   calcStart: 0
@@ -178,51 +181,90 @@ window.addEventListener('resize', ajusterEchelle);
    arrive : le compteur qui monte ne dit pas qui, et sur une chaine active on
    ne sait pas si c'est son propre vote ou celui du voisin.
 
+   Les votes arrivent par paquets - le serveur regroupe ce qu'il recoit toutes
+   les 120 ms - donc on ne les affiche PAS a la volee : ils entrent dans une
+   file et sortent un par un, a intervalle fixe. Trois bulles se lisent ; six
+   qui apparaissent d'un coup ne se lisent pas. Quand la file deborde on garde
+   les votes les plus recents : mieux vaut du frais qu'un rattrapage.
+
    Les coordonnees se prennent en pixels du plateau : le canvas est mis a
    l'echelle de la fenetre, donc on divise les rectangles par cette echelle
    pour revenir au repere de dessin (1920x1080). */
-const BULLES_MAX = 4;
-const BULLE_DUREE = 2100;
+const BULLE_DUREE = 4000;        // doit rester egal a l'animation bulleVol
+const BULLE_INTERVALLE = 1400;   // une bulle sort de la file toutes les 1,4 s
+const BULLES_MAX = 3;            // au-dela ca se chevauche et ne se lit plus
+const FILE_MAX = 8;
+
+let fileVotes = [];
+let pompe = null;
 
 function bullesDeVote(votants) {
   if (!votants || !votants.length || S.active < 0) return;
+  for (const v of votants) fileVotes.push(v);
+  if (fileVotes.length > FILE_MAX) fileVotes = fileVotes.slice(-FILE_MAX);
+  if (!pompe) defilerFile();
+}
+
+// Sort un vote de la file, pose sa bulle, et se rappelle tant qu'il en reste.
+function defilerFile() {
+  const v = fileVotes.shift();
+  if (!v || S.active < 0) { pompe = null; return; }
+  poserBulle(v);
+  // setTimeout direct, pas after() : ce minuteur se pilote ici, il ne doit pas
+  // etre balaye par le clearTimers() d'un changement de scene sans que pompe
+  // soit remis a zero - la file resterait bloquee pour le reste du segment.
+  pompe = setTimeout(defilerFile, BULLE_INTERVALLE);
+}
+
+function viderBulles() {
+  clearTimeout(pompe);
+  pompe = null;
+  fileVotes = [];
+  const couche = $('volee');
+  if (couche) couche.innerHTML = '';
+}
+
+function poserBulle(vt) {
   const d = dom.rows[S.active];
   const carte = $('panelCard');
   const couche = $('volee');
   if (!d || !carte || !couche) return;
-  // Salve de votes : on laisse respirer plutot que d'empiler des bulles
-  // illisibles. Le compteur, lui, suit tout le monde.
   if (couche.children.length >= BULLES_MAX) return;
 
   const c = carte.getBoundingClientRect();
   const v = d.votes.getBoundingClientRect();
   if (!c.width || !v.width) return;
-  const x = (v.right - c.left) / echelle + 10;
+  // Un leger decalage au depart : deux bulles ne doivent pas monter
+  // exactement sur la meme verticale.
+  const x = (v.right - c.left) / echelle + 10 + ((Math.random() * 16) | 0);
   const y = (v.top + v.height / 2 - c.top) / echelle - 17;
 
-  votants.slice(-2).forEach((vt, k) => {
-    after(k * 150, () => {
-      if (couche.children.length >= BULLES_MAX) return;
-      const b = el('div', 'bulle', couche);
-      // Un leger decalage au depart : deux bulles nees a la meme seconde ne
-      // doivent pas se superposer au pixel pres.
-      const dx = (Math.random() * 14) | 0;
-      const dy = ((Math.random() * 18) | 0) - 9;
-      b.style.cssText = `left:${x + dx}px;top:${y + dy}px`;
-      el('span', 'bulle-nom', b).textContent = trunc(vt.name || '', 14);
-      const n = el('span', 'bulle-note', b);
-      n.textContent = String(vt.note);
-      n.style.color = noteColor(vt.note);
-      b.addEventListener('animationend', () => b.remove());
-      /* Filet de securite : quand l'onglet n'est pas visible (scene OBS
-         inactive), les animations gelent et animationend ne part jamais.
-         Sans ca, on retrouverait de vieilles bulles figees au retour. */
-      after(BULLE_DUREE + 400, () => b.remove());
-    });
-  });
+  const b = el('div', 'bulle', couche);
+  b.style.cssText = `left:${x}px;top:${y}px`;
+  el('span', 'bulle-nom', b).textContent = trunc(vt.name || '', 14);
+  const n = el('span', 'bulle-note', b);
+  n.textContent = String(vt.note);
+  n.style.color = noteColor(vt.note);
+  b.addEventListener('animationend', () => b.remove());
+  /* Filet de securite : quand l'onglet n'est pas visible (scene OBS
+     inactive), les animations gelent et animationend ne part jamais.
+     Sans ca, on retrouverait de vieilles bulles figees au retour. */
+  setTimeout(() => b.remove(), BULLE_DUREE + 500);
 }
 
 // ---------------------------------------------------------------- peinture
+
+/* Le bandeau de semaine et l'en-tete de la colonne de droite disent la meme
+   chose : de qui on lit les notes. Un seul endroit les ecrit, sinon le
+   changement d'etape rendrait son libelle au bandeau et effacerait le nom du
+   viewer mis a l'antenne. */
+function peindreEntete() {
+  const f = S.focus;
+  $('weekChip').textContent = f ? `La semaine de ${trunc(f.name, 18)}` : S.weekLabel;
+  $('colChat').textContent = f ? trunc(f.name, 14) : 'Chat';
+  $('panelCard').classList.toggle('focus', !!f);
+  $('weekChip').classList.toggle('focus', !!f);
+}
 
 function peindreLignes() {
   S.rows.forEach((r, i) => {
@@ -249,12 +291,23 @@ function peindreLignes() {
     d.gAFill.style.width = (aVide ? 0 : r.amina * 10) + '%';
     d.sweep.classList.toggle('on', active && r.amina == null);
 
-    // Jauge Chat (valeur lissee)
-    const v = up ? 0 : r.disp;
-    d.gCNum.textContent = up ? '–' : !r.count ? '·' : v.toFixed(1);
-    d.gCNum.style.color = !r.count || up ? '#A2B4CE' : noteColor(v);
-    d.gCFill.style.width = (v * 10) + '%';
-    d.gCFill.style.background = noteColor(v);
+    /* Colonne de droite : la moyenne du chat, ou la note du viewer mis a
+       l'antenne. Sa semaine se lit en entier, y compris sur les criteres pas
+       encore joues - c'est tout l'interet de la montrer. */
+    if (S.focus) {
+      const note = S.focus.notes[i];
+      const vide = note == null;
+      d.gCNum.textContent = vide ? '–' : String(note);
+      d.gCNum.style.color = vide ? '#A2B4CE' : noteColor(note);
+      d.gCFill.style.width = (vide ? 0 : note * 10) + '%';
+      d.gCFill.style.background = noteColor(vide ? 0 : note);
+    } else {
+      const v = up ? 0 : r.disp;
+      d.gCNum.textContent = up ? '–' : !r.count ? '·' : v.toFixed(1);
+      d.gCNum.style.color = !r.count || up ? '#A2B4CE' : noteColor(v);
+      d.gCFill.style.width = (v * 10) + '%';
+      d.gCFill.style.background = noteColor(v);
+    }
   });
 }
 
@@ -282,7 +335,8 @@ function montrerMoyenneGenerale(on) {
   const a = el('div', 'global-v global-a', g);
   a.textContent = moyenneAmina();
   const c = el('div', 'global-v global-c', g);
-  c.textContent = moyenneChat();
+  // En focus, la valeur de droite est la moyenne du viewer, pas celle du chat.
+  c.textContent = S.focus ? S.focus.avg.toFixed(1) : moyenneChat();
 }
 
 function peindreHof(type) {
@@ -425,6 +479,7 @@ function go(scene, arg) {
   S.calcRun = false;
   S.scene = scene;
   if (scene !== 's3' && scene !== 's4') S.active = -1;
+  viderBulles();
 
   const panel = $('panel'), hof = $('hof'), rank = $('rank');
 
@@ -488,7 +543,16 @@ function go(scene, arg) {
     $('hint').classList.add('in');
     S.rows.forEach((r, k) => {
       r.entered = true;
-      r.state = k < i ? (r.amina != null ? 'done' : 'upcoming') : k === i ? 'active' : 'upcoming';
+      /* Une ligne deja jouee reste « done », meme si Amina n'a pas donne sa
+         note : sinon passer au critere suivant la renvoyait a « a venir » et
+         effacait la moyenne du chat qu'on venait d'afficher. La jauge d'Amina
+         sait deja montrer « – » quand la note manque.
+
+         On se fie aussi aux votes recus, pas seulement a la position : en
+         revenant en arriere, les criteres deja notes doivent garder leurs
+         chiffres. */
+      const dejaJouee = k < i || r.amina != null || r.count > 0;
+      r.state = k === i ? 'active' : dejaJouee ? 'done' : 'upcoming';
     });
     peindreLignes();
   }
@@ -652,19 +716,40 @@ function connecter() {
       S.criteres = m.criteres;
       S.etapes = m.etapes;
       S.rows = S.criteres.map(newRow);
+      // Le viewer a l'antenne fait partie de l'etat : une page rechargee en
+      // pleine emission doit le retrouver, pas revenir au tableau global.
+      S.focus = m.etat.focus || null;
+      S.weekLabel = m.etat.weekLabel || '';
       construireScene();
       reprendre(m.etat);
+      peindreEntete();
       return;
     }
     // Toute la sequence est pilotee par les etapes envoyees par le serveur.
     if (m.t === 'etape') {
-      $('weekChip').textContent = m.weekLabel;
+      S.weekLabel = m.weekLabel;
+      peindreEntete();
       if (m.viewers && m.viewers.length) S.viewers = m.viewers;
       if (m.id === 's1') S.rows = S.criteres.map(newRow);
       go(m.activeIndex >= 0 ? 's3' : m.id, m.activeIndex);
       return;
     }
-    if (m.t === 'etat') { if (!m.etat.actif) go('idle'); return; }
+    if (m.t === 'etat') {
+      S.focus = m.etat.focus || null;
+      peindreEntete();
+      peindreLignes();
+      if (!m.etat.actif) go('idle');
+      return;
+    }
+    // La regie met la semaine d'un viewer a l'antenne, ou revient au tableau.
+    if (m.t === 'focus') {
+      S.focus = m.viewer || null;
+      peindreEntete();
+      peindreLignes();
+      // La moyenne generale affichee doit suivre, si elle est a l'ecran.
+      if ($('globalSlot').children.length) montrerMoyenneGenerale(true);
+      return;
+    }
     // Les criteres ont change depuis la telecommande : on refait le tableau.
     if (m.t === 'criteres') {
       S.criteres = m.criteres;

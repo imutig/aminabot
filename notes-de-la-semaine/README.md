@@ -79,6 +79,21 @@ sont les listes, à l'intérieur des panneaux, qui défilent.
   le nom et le coefficient, modifiables hors segment ; à droite la note
   d'Amina et la moyenne du chat, qui se remplissent au fil du segment. C'est
   le relevé complet de la semaine sans quitter la régie.
+- **À droite, les participants** : tout le monde a voté au moins une fois,
+  trié par assiduité, avec un champ de recherche.
+
+### Mettre la semaine de quelqu'un à l'antenne
+
+Clique un pseudo dans **Les participants** : la colonne de droite du tableau,
+à l'écran, montre **ses notes à lui** à la place des moyennes du chat. La
+colonne prend son pseudo, le bandeau passe en rose et affiche « La semaine de
+… », et la colonne d'Amina reste en face - c'est la comparaison qui est
+intéressante.
+
+Sa semaine se lit **en entier**, y compris sur les critères pas encore joués.
+Reclique le même pseudo, ou le bouton **Tableau**, pour revenir aux moyennes.
+Possible à n'importe quel moment après le lancement, et conservé si l'overlay
+se recharge.
 
 Raccourcis clavier sur la page : `←` `→` pour naviguer, `0`–`9` et `A` (=10)
 pour la note d'Amina.

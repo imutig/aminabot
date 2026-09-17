@@ -76,6 +76,17 @@ export function demarrerServeur(session, { onLog } = {}) {
       let m;
       try { m = JSON.parse(raw); } catch { return; }
       if (m.t === 'etat?') { envoyer(ws, { t: 'etat', etat: session.snapshot() }); return; }
+      /* La liste des participants ne part qu'a qui la demande : c'est la
+         telecommande qui la consulte, l'overlay n'en a pas besoin, et avec
+         300 votants ce serait une diffusion inutile a chaque vote. */
+      if (m.t === 'participants?') {
+        envoyer(ws, {
+          t: 'participants',
+          liste: session.participants().map((p) => ({ id: p.id, name: p.name, n: p.n, avg: p.avg })),
+          focusId: session.focusId || null
+        });
+        return;
+      }
       if (m.t !== 'cmd') return;
       if (m.act === 'criteres') {
         const r = session.definirCriteres(m.liste);
@@ -93,6 +104,7 @@ export function demarrerServeur(session, { onLog } = {}) {
         case 'aller': session.allerA(m.pas); break;
         case 'note': session.noterAmina(m.value); break;
         case 'annuler-note': session.annulerNote(); break;
+        case 'focus': session.montrerViewer(m.id || null); break;
       }
     });
   });
@@ -131,6 +143,7 @@ export function demarrerServeur(session, { onLog } = {}) {
   session.on('vote', (d) => envoyerTally(d.tally, d.votant));
   session.on('amina', (d) => diffuser({ t: 'amina', ...d }));
   session.on('amina-annulee', (d) => diffuser({ t: 'amina-annulee', ...d }));
+  session.on('focus', (d) => diffuser({ t: 'focus', ...d }));
 
   // ---- Chat -> overlay ----
   // Groupe par paquets de 200 ms : un chat qui s'emballe ne doit pas envoyer

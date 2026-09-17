@@ -591,7 +591,10 @@ html, body {
   box-shadow: 0 12px 24px -16px rgba(168, 56, 106, .75);
   white-space: nowrap;
   transform-origin: left center;
-  animation: bulleVol 2.1s cubic-bezier(.22, 1, .36, 1) forwards;
+  /* linear ici, et une courbe par segment dans les keyframes : une courbe
+     globale ralentit la fin de la montee, et trois bulles espacees de 1,4 s
+     se retrouvaient tassees a 11 px l'une de l'autre au lieu de 48. */
+  animation: bulleVol 4s linear forwards;
 }
 .bulle-nom { font-weight: 800; font-size: 15px; color: var(--rose-profond); }
 .bulle-note {
@@ -602,12 +605,37 @@ html, body {
   font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 17px;
 }
 
-/* Un seul rebond a l'arrivee, puis elle s'envole en diagonale : la trajectoire
-   raconte « c'est parti, c'est compte ». */
+/* Quatre secondes : un rebond a l'arrivee, puis une longue montee en
+   diagonale, et le depart en fondu. La duree compte - il faut avoir le temps
+   de lire le pseudo et de se dire « c'est le mien ».
+
+   La montee est longue (120 px) parce que trois bulles peuvent se suivre :
+   espacees de 1,4 s, elles se retrouvent a une quarantaine de pixels les unes
+   des autres, donc lisibles sans se chevaucher. */
 @keyframes bulleVol {
-  0%   { opacity: 0; transform: translate(-8px, 8px) scale(.7); }
-  16%  { opacity: 1; transform: translate(0, 0) scale(1.07); }
-  28%  { transform: translate(2px, -5px) scale(1); }
-  70%  { opacity: 1; }
-  100% { opacity: 0; transform: translate(30px, -58px) scale(.92); }
+  0%   { opacity: 0; transform: translate(-8px, 10px) scale(.7);
+         animation-timing-function: cubic-bezier(.2, .9, .3, 1); }
+  7%   { opacity: 1; transform: translate(0, 0) scale(1.07);
+         animation-timing-function: ease-out; }
+  13%  { transform: translate(1px, -5px) scale(1);
+         animation-timing-function: linear; }
+  70%  { opacity: 1; transform: translate(20px, -84px) scale(1);
+         animation-timing-function: ease-in; }
+  100% { opacity: 0; transform: translate(30px, -120px) scale(.93); }
 }
+
+/* ---------------- La semaine d'un viewer a l'antenne ---------------- */
+
+/* La colonne de droite ne montre plus la moyenne du chat mais les notes d'une
+   seule personne. Il faut que ce soit evident a l'ecran, sinon on croit lire
+   la moyenne generale : le bandeau de semaine passe en rose et la colonne
+   prend la couleur de marque au lieu du bleu du chat. */
+.week.focus {
+  background: var(--rose-vif);
+  border-color: var(--rose-vif);
+  color: #FFFDFB;
+}
+.card.focus .col-chat { color: var(--rose-profond); }
+/* La semaine du viewer se lit en entier, y compris sur les criteres qui ne
+   sont pas encore passes : sinon la moitie du tableau reste en veille. */
+.card.focus .gauge-c { opacity: 1; }

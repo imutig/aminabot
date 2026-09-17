@@ -11,7 +11,7 @@ const el = (tag, cls, parent) => {
   return n;
 };
 
-const S = { etapes: [], criteres: [], etat: null, tallies: {}, aminaName: 'Amina', brouillon: null };
+const S = { etapes: [], criteres: [], etat: null, tallies: {}, aminaName: 'Amina', brouillon: null, gens: [], focusId: null };
 
 let ws = null;
 const envoyer = (m) => { if (ws && ws.readyState === 1) ws.send(JSON.stringify(m)); };
@@ -197,6 +197,50 @@ function reinitCriteres() {
   construireCriteres();
 }
 
+// ---------------------------------------------------------------- participants
+
+/* Qui a vote, et la semaine de qui est a l'antenne.
+
+   La liste se redemande au serveur plutot que d'etre diffusee : avec 300
+   votants, la pousser a chaque vote sature la liaison pour un panneau qu'on
+   ne regarde que par moments. On la rafraichit toutes les 4 s, et tout de
+   suite apres une action. */
+const demanderGens = () => envoyer({ t: 'participants?' });
+
+function construireGens() {
+  const box = $('gensListe');
+  const q = $('gensQ').value.trim().toLowerCase();
+  const liste = q ? S.gens.filter((g) => g.name.toLowerCase().includes(q)) : S.gens;
+
+  box.innerHTML = '';
+  $('gensNb').textContent = S.gens.length
+    ? `${S.gens.length} participant${S.gens.length > 1 ? 's' : ''}`
+    : '0';
+  $('gensRetour').disabled = !S.focusId;
+  $('gensRetour').classList.toggle('chaud', !!S.focusId);
+
+  if (!liste.length) {
+    const v = el('div', 'gens-vide', box);
+    v.textContent = S.gens.length
+      ? 'Aucun pseudo ne correspond.'
+      : "Personne n'a encore voté.";
+    return;
+  }
+
+  liste.forEach((g) => {
+    const b = el('button', 'gens', box);
+    b.classList.toggle('on', g.id === S.focusId);
+    el('span', 'gens-nom', b).textContent = g.name;
+    el('span', 'gens-n', b).textContent = String(g.n);
+    el('span', 'gens-moy', b).textContent = g.avg.toFixed(1);
+    // Reclic sur celui qui est deja a l'antenne = retour au tableau global.
+    b.onclick = () => {
+      cmd('focus', { id: g.id === S.focusId ? null : g.id });
+      setTimeout(demanderGens, 120);
+    };
+  });
+}
+
 // ---------------------------------------------------------------- WebSocket
 
 function connecter() {
@@ -229,6 +273,18 @@ function connecter() {
       construireNotes();
       reinitCriteres();
       peindre();
+      demanderGens();
+      return;
+    }
+    if (m.t === 'participants') {
+      S.gens = m.liste;
+      S.focusId = m.focusId;
+      construireGens();
+      return;
+    }
+    if (m.t === 'focus') {
+      S.focusId = m.viewer ? m.viewer.id : null;
+      construireGens();
       return;
     }
     if (m.t === 'criteres') {
@@ -275,6 +331,11 @@ $('critAjout').onclick = () => {
   const inputs = document.querySelectorAll('.crit-nom');
   inputs[inputs.length - 1]?.focus();
 };
+$('gensQ').oninput = () => construireGens();
+$('gensRetour').onclick = () => { cmd('focus', { id: null }); setTimeout(demanderGens, 120); };
+// Les votes arrivent en continu : la liste se rafraichit toute seule.
+setInterval(() => { if (ws && ws.readyState === 1) demanderGens(); }, 4000);
+
 $('critAnnuler').onclick = () => reinitCriteres();
 $('critSauver').onclick = () => {
   const liste = S.brouillon.filter((c) => c.nom.trim());

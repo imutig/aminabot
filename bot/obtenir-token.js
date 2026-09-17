@@ -101,7 +101,23 @@ const serveur = http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end('<h1>C\'est bon !</h1><p>Reviens dans le terminal, tu peux fermer cet onglet.</p>');
 
-    console.log('\n  ✓ Jeton obtenu. Mets ces trois variables dans Railway (service bot) :\n');
+    /* On demande a Twitch a QUI appartient ce jeton. C'est la seule facon sure
+       de connaitre le pseudo exact a mettre dans BOT_USERNAME : se tromper de
+       compte au moment d'autoriser est l'erreur la plus facile a commettre. */
+    let login = null;
+    try {
+      const v = await fetch('https://id.twitch.tv/oauth2/validate', {
+        headers: { Authorization: `OAuth ${d.access_token}` }
+      });
+      if (v.ok) login = (await v.json()).login;
+    } catch { /* simple confort, on continue sans */ }
+
+    if (login) {
+      console.log(`\n  Ce jeton appartient au compte : ${login}`);
+      console.log(`  -> BOT_USERNAME doit valoir exactement : ${login}`);
+    }
+
+    console.log('\n  ✓ Jeton obtenu. A reporter A LA FOIS dans .env et dans Railway :\n');
     console.log(`  TWITCH_CLIENT_ID     = ${ID}`);
     console.log(`  TWITCH_CLIENT_SECRET = ${SECRET}`);
     console.log(`  TWITCH_REFRESH_TOKEN = ${d.refresh_token}\n`);

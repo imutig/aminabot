@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#FF8FBF">
+<meta name="theme-color" content="#FFFFFF">
 <title>Régie des notes de la semaine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,107 +12,125 @@
 </head>
 <body>
 
-<!-- ============ Bandeau fige : ou on en est + les deux boutons de pilotage ============ -->
-<header class="tete">
-  <div class="etape-num" id="etapeNum">·</div>
+<!-- La page est une coque de la hauteur de l'ecran : elle ne defile jamais.
+     Ce sont les listes, a l'interieur des panneaux, qui defilent. -->
+<div class="app">
 
-  <div class="tete-txt">
-    <div class="etape-label" id="etapeLabel">Au repos</div>
-    <div class="etape-suite">Ensuite : <b id="etapeSuite">lance le segment</b></div>
-  </div>
+  <!-- ================= Barre du haut ================= -->
+  <header class="barre">
 
-  <div class="lien" id="lien">connexion…</div>
+    <div class="marque">
+      <span class="marque-nom">Les notes de la semaine</span>
+      <span class="trait"></span>
+      <span class="marque-sous">Régie</span>
+    </div>
 
-  <div class="pilote">
-    <button class="gros prev" id="btnPrev">
-      <span class="fleche">‹</span>
-      <span class="gros-txt">Précédent<small>flèche gauche</small></span>
-    </button>
-    <button class="gros next" id="btnNext">
-      <span class="gros-txt">Suivant<small>flèche droite</small></span>
-      <span class="fleche">›</span>
-    </button>
-  </div>
-</header>
-
-<main class="corps">
-
-  <!-- ============ Rail de gauche : la carte du segment ============ -->
-  <aside class="rail">
-
-    <section class="carte">
-      <div class="carte-tete"><h2>Le déroulé</h2></div>
-      <div class="etapes" id="etapes"></div>
-      <p class="aide">Clique une étape pour y sauter directement.</p>
-    </section>
-
-    <section class="carte">
-      <div class="carte-tete"><h2>Le segment</h2></div>
-      <div class="actions">
-        <button class="act act-go" id="btnStart">Lancer le segment</button>
-        <button class="act" id="btnStop">Arrêter</button>
-        <button class="act act-danger" id="btnReset">Tout remettre à zéro</button>
+    <div class="etape">
+      <div class="etape-num" id="etapeNum">·</div>
+      <div class="etape-txt">
+        <div class="etape-label" id="etapeLabel">Au repos</div>
+        <div class="etape-suite">Ensuite&nbsp;: <b id="etapeSuite">lance le segment</b></div>
       </div>
-      <p class="aide">« Tout remettre à zéro » efface aussi les votes déjà reçus.</p>
-    </section>
+    </div>
 
-  </aside>
+    <div class="barre-fin">
+      <span class="lien" id="lien">connexion…</span>
+      <button class="bt" id="btnPrev">
+        <span class="fleche">‹</span>Précédent
+      </button>
+      <button class="bt bt-plein" id="btnNext">
+        Suivant<span class="fleche">›</span>
+      </button>
+    </div>
 
-  <!-- ============ Zone de travail ============ -->
-  <div class="travail">
+  </header>
 
-    <!-- ---------------- La note d'Amina ---------------- -->
-    <section class="carte zone-note" id="notesCard">
-      <div class="carte-tete">
-        <h2>Note d'<span id="nomAmina">Amina</span></h2>
-        <div class="etat" id="etatVote">en veille</div>
-      </div>
-      <div class="notes" id="notes"></div>
-      <div class="note-pied">
-        <button class="mini" id="btnAnnuler">Annuler la note et rouvrir les votes</button>
-        <span class="aide aide-inline">Les touches 0 à 9 du clavier notent aussi, A pour 10.</span>
-      </div>
-    </section>
+  <!-- ================= Corps ================= -->
+  <main class="corps">
 
-    <!-- ---------------- Ce que fait le tchat ---------------- -->
-    <section class="carte zone-live" id="liveCard">
-      <div class="carte-tete">
-        <h2>Le tchat</h2>
-        <div class="puce" id="liveCount">0 vote</div>
-      </div>
-      <div class="live">
-        <div class="live-bloc">
-          <div class="live-l">Moyenne chat</div>
-          <div class="live-v" id="liveAvg">–</div>
+    <!-- --------- Colonne de gauche : le pilotage --------- -->
+    <div class="colonne colonne-rail">
+
+      <section class="panneau panneau-extensible">
+        <div class="pan-tete">
+          <span class="pan-titre">Le déroulé</span>
+          <span class="pan-note">clic pour y sauter</span>
         </div>
-        <div class="live-bloc">
-          <div class="live-l">Note d'Amina</div>
-          <div class="live-v rose" id="liveAmina">–</div>
-        </div>
-      </div>
-    </section>
+        <div class="liste" id="etapes"></div>
+      </section>
 
-    <!-- ---------------- Les criteres ---------------- -->
-    <section class="carte zone-crit">
-      <div class="carte-tete">
-        <h2>Les critères</h2>
-        <div class="puce" id="critNb">0 critère</div>
-      </div>
-      <div class="verrou off" id="critVerrou">Segment en cours : arrête-le pour modifier les critères.</div>
-      <div class="crit-liste" id="critListe"></div>
-      <button class="mini" id="critAjout">+ Ajouter un critère</button>
-      <div class="crit-pied">
-        <p class="aide">Le coefficient pondère le critère dans la moyenne générale et dans le classement. ×1 = poids normal.</p>
-        <div class="crit-etat" id="critEtat"></div>
-        <div class="crit-btns">
-          <button class="act" id="critAnnuler">Annuler</button>
-          <button class="act act-go" id="critSauver">Enregistrer</button>
+      <section class="panneau">
+        <div class="pan-tete">
+          <span class="pan-titre">Le segment</span>
         </div>
-      </div>
-    </section>
+        <div class="pan-corps pan-actions">
+          <button class="bt bt-large bt-go" id="btnStart">Lancer le segment</button>
+          <button class="bt bt-large" id="btnStop">Arrêter</button>
+          <button class="bt bt-large bt-rouge" id="btnReset">Tout remettre à zéro</button>
+        </div>
+      </section>
 
-  </div>
-</main>
+    </div>
+
+    <!-- --------- Colonne principale : la note et les critères --------- -->
+    <div class="colonne colonne-large">
+
+      <section class="panneau" id="notesCard">
+        <div class="pan-tete">
+          <span class="pan-titre">Note d'<span id="nomAmina">Amina</span></span>
+          <span class="pan-note">touches 0 à 9 du clavier, A pour 10</span>
+          <span class="pan-etat" id="etatVote">en veille</span>
+        </div>
+        <div class="pan-corps">
+          <div class="notes" id="notes"></div>
+        </div>
+        <div class="live" id="liveCard">
+          <div class="live-bloc">
+            <span class="live-l">Moyenne chat</span>
+            <span class="live-v" id="liveAvg">–</span>
+          </div>
+          <div class="live-bloc">
+            <span class="live-l">Note d'Amina</span>
+            <span class="live-v live-rose" id="liveAmina">–</span>
+          </div>
+          <div class="live-bloc">
+            <span class="live-l">Votes reçus</span>
+            <span class="live-v live-petit" id="liveCount">0 vote</span>
+          </div>
+          <button class="bt" id="btnAnnuler">Annuler la note et rouvrir les votes</button>
+        </div>
+      </section>
+
+      <section class="panneau panneau-extensible">
+        <div class="pan-tete">
+          <span class="pan-titre">Le tableau de la semaine</span>
+          <span class="pan-note">le coefficient pondère le critère dans la moyenne et dans le classement</span>
+          <span class="pan-etat" id="critNb">0 critère</span>
+        </div>
+        <div class="verrou off" id="critVerrou">Segment en cours : arrête-le pour modifier les critères.</div>
+        <div class="tab-tete">
+          <span class="c-n"></span>
+          <span class="c-nom">Critère</span>
+          <span class="c-coef">Coef.</span>
+          <span class="c-amina">Amina</span>
+          <span class="c-chat">Chat</span>
+          <span class="c-bar">Moyenne du chat</span>
+          <span class="c-votes">Votes</span>
+          <span class="c-sup"></span>
+        </div>
+        <div class="liste crit-liste" id="critListe"></div>
+        <div class="pan-pied">
+          <button class="bt" id="critAjout">+ Ajouter un critère</button>
+          <span class="pan-etat" id="critEtat"></span>
+          <button class="bt" id="critAnnuler">Annuler</button>
+          <button class="bt" id="critSauver">Enregistrer</button>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+</div>
 
 <script type="module" src="./control.js"></script>
 </body>

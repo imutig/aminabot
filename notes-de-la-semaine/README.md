@@ -64,16 +64,21 @@ régler le placement dans OBS.
 à ouvrir sur un second écran (ou sur le téléphone en dépannage : même wifi,
 remplace `localhost` par l'IP du PC).
 
-Elle tient en un écran, sans défiler :
+La page occupe exactement la hauteur de l'écran et **ne défile jamais** : ce
+sont les listes, à l'intérieur des panneaux, qui défilent.
 
-- **en haut**, l'étape en cours, ce qui vient après, l'état de la connexion, et
-  **Précédent / Suivant** : les deux gros boutons, c'est 90 % de l'usage
-- **à gauche**, le **déroulé** complet pour sauter directement à une étape
-  (l'étape en cours se met en évidence toute seule), et **Lancer / Arrêter /
-  Remettre à zéro**
-- **à droite**, la **note d'Amina** sur une ligne de 0 à 10 avec « Annuler la
-  note » pour rouvrir les votes, le **direct** du chat (nombre de votes et
-  moyenne sur le critère en cours), et l'éditeur de **critères**
+- **En haut** : l'étape en cours, ce qui vient après, l'état de la connexion,
+  et **Précédent / Suivant**, c'est 90 % de l'usage.
+- **À gauche** : le **déroulé** complet, une ligne par étape, pour y sauter
+  directement (l'étape en cours se surligne et se recentre toute seule), puis
+  **Lancer / Arrêter / Remettre à zéro**.
+- **En haut à droite** : la **note d'Amina**, une ligne de 0 à 10, avec en
+  dessous le direct du chat (moyenne, note d'Amina, votes reçus) et
+  « Annuler la note » pour rouvrir les votes.
+- **En dessous, le tableau de la semaine** : une ligne par critère. À gauche
+  le nom et le coefficient, modifiables hors segment ; à droite la note
+  d'Amina et la moyenne du chat, qui se remplissent au fil du segment. C'est
+  le relevé complet de la semaine sans quitter la régie.
 
 Raccourcis clavier sur la page : `←` `→` pour naviguer, `0`–`9` et `A` (=10)
 pour la note d'Amina.

@@ -74,6 +74,34 @@ function peindre() {
   }
   if (!actif) dernierPasVu = null;
 
+  /* Le tableau se remplit au fil du segment : une ligne par critere, la
+     note d'Amina et la moyenne du chat a droite. C'est le releve de la
+     semaine, visible d'un coup d'oeil sans quitter la regie. */
+  document.querySelectorAll('.crit').forEach((l) => {
+    const n = Number(l.dataset.i);
+    const r = actif && etat.rows ? etat.rows[n] : null;
+    const t = S.tallies[n];
+    const votes = t ? t.count : (r?.count ?? 0);
+    const moy = t ? t.avg : (r?.avg ?? 0);
+    const note = r && r.amina != null ? r.amina : null;
+
+    l.classList.toggle('on', actif && n === etat.activeIndex);
+
+    const cA = l.querySelector('.crit-amina');
+    cA.textContent = note != null ? String(note) : '–';
+    cA.classList.toggle('rempli', note != null);
+
+    const cC = l.querySelector('.crit-chat');
+    cC.textContent = votes ? moy.toFixed(1) : '–';
+    cC.classList.toggle('rempli', !!votes);
+
+    const cV = l.querySelector('.crit-votes');
+    cV.textContent = votes ? String(votes) : '–';
+    cV.classList.toggle('rempli', !!votes);
+
+    l.querySelector('.crit-bar > i').style.width = votes ? `${moy * 10}%` : '0';
+  });
+
   // Les criteres ne se modifient pas pendant un segment : les votes deja
   // recus n'auraient plus de sens.
   $('critVerrou').classList.toggle('off', !actif);
@@ -85,8 +113,11 @@ function construireEtapes() {
   const box = $('etapes');
   box.innerHTML = '';
   S.etapes.forEach((e, i) => {
+    /* Code court et libelle dans deux colonnes distinctes : alignes les uns
+       sous les autres, on retrouve une etape sans la lire en entier. */
     const b = el('button', 'et', box);
-    b.textContent = e.court + ' · ' + e.label;
+    el('span', 'et-num', b).textContent = e.court;
+    el('span', 'et-nom', b).textContent = e.label;
     b.dataset.pas = String(i);
     b.onclick = () => cmd('aller', { pas: i });
   });
@@ -113,6 +144,7 @@ function construireCriteres() {
 
   S.brouillon.forEach((c, i) => {
     const l = el('div', 'crit', box);
+    l.dataset.i = String(i);
 
     const num = el('div', 'crit-n', l);
     num.textContent = String(i + 1);
@@ -132,6 +164,13 @@ function construireCriteres() {
     plus.textContent = '+';
     moins.onclick = () => { c.coef = Math.max(0.5, c.coef - 0.5); val.textContent = '×' + c.coef; marquerModifie(); };
     plus.onclick = () => { c.coef = Math.min(5, c.coef + 0.5); val.textContent = '×' + c.coef; marquerModifie(); };
+
+    /* Cotes resultats : vides hors segment, remplis par peindre() au fil
+       des notes. Le tableau sert donc aussi de releve de la semaine. */
+    el('div', 'crit-amina', l).textContent = '–';
+    el('div', 'crit-chat', l).textContent = '–';
+    el('i', null, el('div', 'crit-bar', l));
+    el('div', 'crit-votes', l).textContent = '–';
 
     const sup = el('button', 'crit-sup', l);
     sup.textContent = '✕';

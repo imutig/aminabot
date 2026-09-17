@@ -2,6 +2,7 @@ import tmi from 'tmi.js';
 import { config } from '../config.js';
 // Partage avec Famille en or : un seul endroit gere le renouvellement du jeton.
 import { creerGestionnaireJeton } from '../../bot/token.js';
+import { texteChat } from '../../bot/texte.js';
 
 const C = config.commandes;
 const NOMBRE_SEUL = /^(10|[0-9])$/;
@@ -72,22 +73,30 @@ export function demarrerBot(session, { onLog, onChat, onChatSupprime } = {}) {
     if (self) return;
     vus++;
 
-    const texte = message.trim();
-
-    // Tout le chat part vers l'overlay, commandes comprises : c'est un vrai
-    // chat a l'ecran, pas seulement les votes.
-    if (onChat) {
-      onChat({
-        id: tags.id || String(Date.now()) + Math.random(),
-        userId: tags['user-id'] || tags.username,
-        name: tags['display-name'] || tags.username,
-        texte: texte.slice(0, 120),
-        vote: NOMBRE_SEUL.test(texte) ? Number(texte) : null
-      });
-    }
+    // Voir bot/texte.js : Twitch colle un caractere invisible aux doublons.
+    const texte = texteChat(message);
     const bas = texte.toLowerCase();
     const userId = tags['user-id'] || tags.username;
     const nom = tags['display-name'] || tags.username;
+
+    /* Tout le chat part vers l'overlay, commandes comprises : c'est un vrai
+       chat a l'ecran, pas seulement les votes.
+
+       Mais il part APRES traitement, avec la note reellement comptee. Avant,
+       n'importe quel chiffre s'affichait comme un vote, meme quand il etait
+       refuse (votes fermes sur le critere) : le spectateur voyait sa note
+       validee a l'antenne alors qu'elle ne comptait pas. */
+    let voteCompte = null;
+    const versOverlay = () => {
+      if (!onChat) return;
+      onChat({
+        id: tags.id || String(Date.now()) + Math.random(),
+        userId,
+        name: nom,
+        texte: texte.slice(0, 120),
+        vote: voteCompte
+      });
+    };
     const estPilote =
       tags.badges?.broadcaster === '1' ||
       tags.mod === true ||
@@ -101,19 +110,19 @@ export function demarrerBot(session, { onLog, onChat, onChatSupprime } = {}) {
         session.start();
         dire("C'est parti pour les notes de la semaine ! Notez VOTRE semaine : tapez un chiffre de 0 a 10.");
         log('▶ Segment demarre');
-        return;
+        versOverlay(); return;
       }
-      if (C.stop.includes(cmd)) { session.stop(); log('■ Segment arrete'); return; }
-      if (C.reset.includes(cmd)) { session.reset(); log('↺ Segment remis a zero'); return; }
-      if (C.next.includes(cmd)) { session.suivant(); log('→ Etape suivante'); return; }
-      if (C.prev.includes(cmd)) { session.precedent(); log('← Etape precedente'); return; }
+      if (C.stop.includes(cmd)) { session.stop(); log('■ Segment arrete'); versOverlay(); return; }
+      if (C.reset.includes(cmd)) { session.reset(); log('↺ Segment remis a zero'); versOverlay(); return; }
+      if (C.next.includes(cmd)) { session.suivant(); log('→ Etape suivante'); versOverlay(); return; }
+      if (C.prev.includes(cmd)) { session.precedent(); log('← Etape precedente'); versOverlay(); return; }
       if (C.note.includes(cmd)) {
         if (session.noterAmina(args[0])) log(`✓ Note d'Amina : ${args[0]}`);
-        return;
+        versOverlay(); return;
       }
       // Chiffre seul tape par la streameuse = sa note (si un critere est ouvert).
       if (config.chiffreSeulPourAmina && NOMBRE_SEUL.test(texte) && session.activeIndex >= 0) {
-        if (session.noterAmina(texte)) { log(`✓ Note d'Amina : ${texte}`); return; }
+        if (session.noterAmina(texte)) { log(`✓ Note d'Amina : ${texte}`); versOverlay(); return; }
       }
       // Sinon on laisse passer : un pilote peut aussi voter comme un viewer.
     }
@@ -121,6 +130,7 @@ export function demarrerBot(session, { onLog, onChat, onChatSupprime } = {}) {
     // ---- Vote d'un viewer ----
     if (NOMBRE_SEUL.test(texte)) {
       if (session.voter(userId, nom, texte)) {
+        voteCompte = Number(texte);
         log(`vote · ${nom} → ${texte}`);
       } else {
         // Un chiffre a ete tape mais il n'a pas ete pris : dire pourquoi,
@@ -131,6 +141,8 @@ export function demarrerBot(session, { onLog, onChat, onChatSupprime } = {}) {
         avertir(`chiffre de ${nom} ignore (${raison})`);
       }
     }
+
+    versOverlay();
   });
 
   // Bilan periodique : la preuve que le bot lit bien le chat, meme quand

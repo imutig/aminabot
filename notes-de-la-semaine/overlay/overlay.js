@@ -163,11 +163,64 @@ function construireDecors() {
   }
 }
 
+let echelle = 1;
 function ajusterEchelle() {
   const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-  $('canvas').style.transform = `scale(${Math.max(0.1, s)})`;
+  echelle = Math.max(0.1, s);
+  $('canvas').style.transform = `scale(${echelle})`;
 }
 window.addEventListener('resize', ajusterEchelle);
+
+/* Chaque vote pris en compte fait jaillir une bulle au pseudo du votant,
+   juste a cote du compteur de la ligne en cours.
+
+   C'est la seule preuve, pour quelqu'un dans le chat, que SON message est
+   arrive : le compteur qui monte ne dit pas qui, et sur une chaine active on
+   ne sait pas si c'est son propre vote ou celui du voisin.
+
+   Les coordonnees se prennent en pixels du plateau : le canvas est mis a
+   l'echelle de la fenetre, donc on divise les rectangles par cette echelle
+   pour revenir au repere de dessin (1920x1080). */
+const BULLES_MAX = 4;
+const BULLE_DUREE = 2100;
+
+function bullesDeVote(votants) {
+  if (!votants || !votants.length || S.active < 0) return;
+  const d = dom.rows[S.active];
+  const carte = $('panelCard');
+  const couche = $('volee');
+  if (!d || !carte || !couche) return;
+  // Salve de votes : on laisse respirer plutot que d'empiler des bulles
+  // illisibles. Le compteur, lui, suit tout le monde.
+  if (couche.children.length >= BULLES_MAX) return;
+
+  const c = carte.getBoundingClientRect();
+  const v = d.votes.getBoundingClientRect();
+  if (!c.width || !v.width) return;
+  const x = (v.right - c.left) / echelle + 10;
+  const y = (v.top + v.height / 2 - c.top) / echelle - 17;
+
+  votants.slice(-2).forEach((vt, k) => {
+    after(k * 150, () => {
+      if (couche.children.length >= BULLES_MAX) return;
+      const b = el('div', 'bulle', couche);
+      // Un leger decalage au depart : deux bulles nees a la meme seconde ne
+      // doivent pas se superposer au pixel pres.
+      const dx = (Math.random() * 14) | 0;
+      const dy = ((Math.random() * 18) | 0) - 9;
+      b.style.cssText = `left:${x + dx}px;top:${y + dy}px`;
+      el('span', 'bulle-nom', b).textContent = trunc(vt.name || '', 14);
+      const n = el('span', 'bulle-note', b);
+      n.textContent = String(vt.note);
+      n.style.color = noteColor(vt.note);
+      b.addEventListener('animationend', () => b.remove());
+      /* Filet de securite : quand l'onglet n'est pas visible (scene OBS
+         inactive), les animations gelent et animationend ne part jamais.
+         Sans ca, on retrouverait de vieilles bulles figees au retour. */
+      after(BULLE_DUREE + 400, () => b.remove());
+    });
+  });
+}
 
 // ---------------------------------------------------------------- peinture
 
@@ -627,6 +680,7 @@ function connecter() {
       return;
     }
     if (m.t === 'tally') {
+      bullesDeVote(m.votants);
       const r = S.rows[m.index];
       if (r) { r.count = m.count; r.avg = m.avg; r.pulse = true; peindreLignes(); }
       return;

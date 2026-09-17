@@ -569,3 +569,45 @@ html, body {
 @keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
 @keyframes pulseDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
 @keyframes fdIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ---------------- Votes en direct ---------------- */
+
+/* Une bulle par vote pris en compte, avec le pseudo du votant. Sans elle, le
+   chat voit un compteur monter sans savoir si c'est son propre vote : c'est
+   le seul accuse de reception cote spectateur. */
+.volee {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 4;
+}
+.bulle {
+  position: absolute;
+  display: flex; align-items: center; gap: 8px;
+  padding: 3px 5px 3px 13px;
+  background: var(--blanc-chaud);
+  border: 2px solid var(--bord-rose-clair);
+  border-radius: 999px;
+  box-shadow: 0 12px 24px -16px rgba(168, 56, 106, .75);
+  white-space: nowrap;
+  transform-origin: left center;
+  animation: bulleVol 2.1s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+.bulle-nom { font-weight: 800; font-size: 15px; color: var(--rose-profond); }
+.bulle-note {
+  display: grid; place-items: center;
+  min-width: 27px; height: 27px; padding: 0 7px;
+  border-radius: 999px;
+  background: var(--fond-rose);
+  font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 17px;
+}
+
+/* Un seul rebond a l'arrivee, puis elle s'envole en diagonale : la trajectoire
+   raconte « c'est parti, c'est compte ». */
+@keyframes bulleVol {
+  0%   { opacity: 0; transform: translate(-8px, 8px) scale(.7); }
+  16%  { opacity: 1; transform: translate(0, 0) scale(1.07); }
+  28%  { transform: translate(2px, -5px) scale(1); }
+  70%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(30px, -58px) scale(.92); }
+}

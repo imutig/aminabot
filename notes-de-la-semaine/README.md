@@ -194,9 +194,21 @@ Il est visible en permanence, y compris avant le lancement et pendant les
 résultats (il ne recouvre rien : le classement s'arrête à 838, le chat commence
 à 866).
 
-Quand un message est un chiffre seul et qu'un critère est ouvert, il s'affiche
-comme une **pastille de note colorée** selon le barème plutôt que comme du
-texte - on voit d'un coup d'œil les votes passer au milieu de la conversation.
+Quand un vote est **réellement compté**, il s'affiche comme une **pastille de
+note colorée** selon le barème plutôt que comme du texte - on voit d'un coup
+d'œil les votes passer au milieu de la conversation. Un chiffre refusé (votes
+fermés sur le critère) reste du texte normal : afficher une pastille pour une
+note qui ne compte pas serait pire que pas de retour du tout.
+
+### Les bulles de vote
+
+À chaque vote pris en compte, une **bulle au pseudo du votant** jaillit à côté
+du compteur de la ligne en cours, monte en diagonale et disparaît en 2 secondes.
+
+C'est le seul accusé de réception côté spectateur : un compteur qui monte ne dit
+pas **qui** a été entendu, et sur une chaîne active on ne sait pas si c'est son
+propre vote ou celui du voisin. Quatre bulles au maximum à l'écran ; pendant une
+salve, les suivantes sont simplement sautées, le compteur suit tout le monde.
 
 **La modération suit** : un message supprimé, un viewer timeout ou banni, ou un
 `/clear` retirent les lignes correspondantes de l'overlay. Sans ça un message

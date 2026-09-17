@@ -2,6 +2,7 @@ import tmi from 'tmi.js';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '../convex/_generated/api.js';
 import { creerGestionnaireJeton } from './token.js';
+import { texteChat } from './texte.js';
 
 /* La connexion au tchat Twitch. Volontairement bete : elle ne connait aucune
    regle de jeu, elle relaie. Toute la logique (detection des reponses, points)
@@ -13,12 +14,13 @@ import { creerGestionnaireJeton } from './token.js';
 
 /* Rejoindre la partie.
 
-   Large volontairement. Twitch REFUSE deux messages identiques d'affilee du
-   meme utilisateur (filtre anti-spam, environ 30 s) : le second est avale sans
-   erreur et le bot ne le voit jamais. En testant, on tape « moi » plusieurs
-   fois de suite et un essai sur deux semble ignore. Accepter des variantes
-   (« moi !! », « moiii », « je joue », « !join ») permet de varier le texte et
-   de contourner ce filtre. */
+   Large volontairement, pour que personne ne rate son inscription sur une
+   faute de frappe ou une variante (« moi !! », « moiii », « je joue »,
+   « !join »).
+
+   Le « un essai sur deux ignore » qu'on observait en testant venait d'ailleurs :
+   le caractere invisible que Twitch colle aux messages repetes. C'est
+   texteChat() qui le retire maintenant, voir bot/texte.js. */
 const REJOINDRE = /^\s*!?\s*(m+o+i+|je\s+joue|jou?e|join)\s*[!.?…♥❤~\s]*$/i;
 
 const prefixe = (t) => (t.startsWith('oauth:') ? t : `oauth:${t}`);
@@ -74,7 +76,8 @@ export function demarrerBot({ onLog } = {}) {
     vus++;
     if (premier) { premier = false; log('✓ premier message reçu - la lecture du tchat fonctionne'); }
 
-    const texte = message.trim();
+    // Voir bot/texte.js : Twitch colle un caractere invisible aux doublons.
+    const texte = texteChat(message);
     const twitchId = tags['user-id'] || tags.username;
     const pseudo = tags['display-name'] || tags.username;
 

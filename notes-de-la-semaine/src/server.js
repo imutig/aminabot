@@ -112,7 +112,9 @@ export function demarrerServeur(session, { onLog } = {}) {
   };
   const envoyerTally = (tally, votant) => {
     enAttente = tally;
-    if (votant && !votant.correction) votants.push({ name: votant.name, note: votant.note });
+    // Les corrections partent aussi : quand on retape une note, c'est
+    // justement la qu'on doute d'avoir ete pris en compte.
+    if (votant) votants.push({ name: votant.name, note: votant.note });
     const delta = Date.now() - dernierEnvoi;
     if (delta >= 120) { vider(); return; }
     if (!envoyerTally.timer) {

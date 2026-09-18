@@ -136,7 +136,7 @@ html, body {
 .col-amina { color: var(--rose-second); }
 .col-chat { color: var(--tete-chat); }
 
-.rows { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.rows { display: flex; flex-direction: column; gap: var(--ligne-gap, 8px); margin-top: 14px; }
 #panel.intro .rows { display: none; }
 
 /* ---------------- Ligne de critere ---------------- */
@@ -150,7 +150,7 @@ html, body {
   border: 2px solid var(--bord-rose);
   border-radius: 22px;
   padding: 0 13px;
-  height: 74px;
+  height: var(--ligne-h, 74px);
   overflow: hidden;
   opacity: 0;
   transform: translateY(18px);
@@ -162,7 +162,7 @@ html, body {
 .row.entered { opacity: 1; transform: translateY(0); }
 .row.done { background: var(--ligne-done); }
 .row.active {
-  height: 84px;
+  height: var(--ligne-h-active, 84px);
   background: #FFFFFF;
   border: 3px solid var(--rose-moyen);
   box-shadow: 0 12px 26px -18px rgba(233,84,143,.8);
@@ -170,7 +170,7 @@ html, body {
   animation: breathe 4.6s ease-in-out infinite;
 }
 
-.row-icon { flex: none; position: relative; width: 38px; height: 38px; display: grid; place-items: center; }
+.row-icon { flex: none; position: relative; width: var(--icone, 38px); height: var(--icone, 38px); display: grid; place-items: center; }
 .row-icon svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .row-marker { position: relative; top: 2px; background: var(--blanc-chaud); }
 
@@ -185,7 +185,7 @@ html, body {
 }
 .row-name {
   font-weight: 800;
-  font-size: 19px;
+  font-size: var(--nom-taille, 19px);
   color: var(--texte-upcoming);
   white-space: nowrap;
   overflow: hidden;
@@ -194,7 +194,7 @@ html, body {
 }
 .row.active .row-name, .row.done .row-name { color: var(--texte); }
 
-.row-meta { display: flex; align-items: center; gap: 6px; height: 24px; overflow: hidden; }
+.row-meta { display: flex; align-items: center; gap: 6px; height: var(--meta-h, 24px); overflow: hidden; }
 .votes {
   flex: none;
   display: flex;
@@ -226,12 +226,12 @@ html, body {
   position: relative;
   font-family: 'Baloo 2', cursive;
   font-weight: 800;
-  font-size: 32px;
+  font-size: var(--note-taille, 32px);
   line-height: 1;
   font-variant-numeric: tabular-nums;
   transition: color .4s ease;
 }
-.gauge-track { position: relative; width: 100%; height: 13px; border-radius: 999px; overflow: hidden; }
+.gauge-track { position: relative; width: 100%; height: var(--piste-h, 13px); border-radius: 999px; overflow: hidden; }
 .gauge-fill { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: 999px; }
 
 .gauge-a .gauge-n { color: var(--amina-attente); }
@@ -653,7 +653,7 @@ html, body {
 }
 .row.active .hist { display: flex; opacity: 1; }
 
-.hist-barres { display: flex; align-items: flex-end; gap: 3px; height: 34px; }
+.hist-barres { display: flex; align-items: flex-end; gap: 3px; height: var(--hist-h, 34px); }
 .hist-col {
   flex: 1 1 0; height: 100%;
   display: flex; align-items: flex-end;

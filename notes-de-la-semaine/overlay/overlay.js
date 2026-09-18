@@ -96,7 +96,41 @@ function construireScene() {
   ajusterEchelle();
 }
 
+/* Densite du tableau selon le nombre de criteres.
+
+   Le tableau doit tenir entre le haut de la carte et le chat : au-dela de huit
+   criteres il passait derriere. Plutot que de faire defiler (impensable a
+   l'antenne) ou de rogner le chat, les lignes se resserrent.
+
+   Le cas contraignant n'est pas le critere en cours mais l'ecran du calcul :
+   toutes les lignes y sont la, plus le bloc « moyenne generale ». Mesure faite
+   sur l'overlay : la carte commence a 56, le chat replie a 936, l'habillage de
+   la carte prend 110 et le bloc moyenne 109. Il reste 649 pour les lignes, et
+   huit criteres en occupent 648 - d'ou le facteur 1 jusqu'a huit, la mise en
+   page d'origine ne bouge pas. */
+const LIGNE_H = 74, LIGNE_GAP = 8, PLACE_LIGNES = 649;
+
+function ajusterDensite(n) {
+  const besoin = LIGNE_H * n + LIGNE_GAP * (n - 1);
+  // Plancher : en dessous, les chiffres des jauges ne se lisent plus de loin.
+  const f = Math.max(0.62, Math.min(1, PLACE_LIGNES / besoin));
+  const r = document.documentElement.style;
+  const px = (base, min = 0) => Math.max(min, Math.round(base * f)) + 'px';
+
+  r.setProperty('--ligne-h', px(LIGNE_H));
+  r.setProperty('--ligne-h-active', px(LIGNE_H + 10));
+  r.setProperty('--ligne-gap', px(LIGNE_GAP, 4));
+  r.setProperty('--icone', px(38, 24));
+  r.setProperty('--meta-h', px(24, 17));
+  r.setProperty('--note-taille', px(32, 20));
+  r.setProperty('--piste-h', px(13, 8));
+  r.setProperty('--hist-h', px(34, 20));
+  // Le nom se resserre moins vite que le reste : c'est ce qu'on lit d'abord.
+  r.setProperty('--nom-taille', Math.max(14, Math.round(19 * (0.55 + 0.45 * f))) + 'px');
+}
+
 function construireLignes() {
+  ajusterDensite(S.criteres.length);
   const list = $('rowList');
   list.innerHTML = '';
   dom.rows = S.criteres.map((c, i) => {

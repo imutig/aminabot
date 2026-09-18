@@ -156,6 +156,25 @@ pas comprenne pourquoi au lieu de croire à un bug :
 Si personne n'a la semaine complète, les trois écrans de résultats le disent
 au lieu de rester sur l'image précédente.
 
+### Au-delà de huit critères
+
+Le tableau doit tenir entre le haut de la carte et le chat. À partir de neuf
+critères il passait derrière : les lignes se **resserrent** maintenant toutes
+seules, hauteur, chiffres et jauges compris. Le nom du critère se resserre
+moins vite que le reste, c'est ce qu'on lit d'abord.
+
+| Critères | Hauteur de ligne | Taille des notes |
+|---|---|---|
+| 2 à 8 | 74 px (inchangé) | 32 px |
+| 9 | 66 px | 28 px |
+| 10 | 59 px | 26 px |
+| 11 | 54 px | 23 px |
+| 12 (maximum) | 49 px | 21 px |
+
+Le cas qui contraint n'est pas le critère en cours mais **l'écran du calcul** :
+toutes les lignes y sont, plus le bloc « moyenne générale ». Ni défilement
+(impensable à l'antenne) ni chat rogné : c'est la densité qui cède.
+
 ### La répartition des votes
 
 La ligne du critère en cours affiche **onze bâtonnets**, un par note, hauteur
